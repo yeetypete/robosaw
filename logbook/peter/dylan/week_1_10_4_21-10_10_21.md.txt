@@ -1,0 +1,26 @@
+Week of 10/4/2021
+
+- Researched competing products for PDRR
+	- SawGear by Tigerstop: only an endstop, installed to existing saws in workshops. Accurate, efficient, simple controls
+
+	- MIT MIT Computer Science & Artificial Intelligence Lab AutoSaw: two robotic arms attached to roombas that can manipulate and carry stock to be cut on mitre saw.
+		- Not well suited to a jobsite setting, need something fixed and easy to use
+
+10/7/21
+
+- PDRR presentation
+
+- Potential saftey concerns/considerations: remote stop button, computer vision obstruction detection
+
+
+10/8/21
+
+- Mitre saw arrived, took initial measurements and photos, dissasembled to view switch electronics, removed blade.
+
+- Handle/switch assembly: https://i.imgur.com/coUHc8T.jpeg
+
+- switch model: https://i.imgur.com/7EivaZZ.jpeg
+
+- Voltage and Current rating: https://i.imgur.com/BygSsOx.jpeg
+
+Looks like we're going to need a relay capable of ~30A peak? Perhaps need to add a seperate control circuit to use smaller relay.
