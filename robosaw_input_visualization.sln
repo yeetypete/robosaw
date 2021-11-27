@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "robosaw_input_visualization", "robosaw_input_visualization\robosaw_input_visualization.csproj", "{8364ED6E-36AB-4827-A0E4-A6470E6CCBF5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8364ED6E-36AB-4827-A0E4-A6470E6CCBF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8364ED6E-36AB-4827-A0E4-A6470E6CCBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8364ED6E-36AB-4827-A0E4-A6470E6CCBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8364ED6E-36AB-4827-A0E4-A6470E6CCBF5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37FDDDF1-6E67-4E09-B0BC-D76303D760B2}
+	EndGlobalSection
+EndGlobal
