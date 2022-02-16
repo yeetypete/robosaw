@@ -1,6 +1,7 @@
 import cv2
 import robo_vision as rv
 import numpy as np
+import asyncio
 from Model import Model
 
 def disp_model(model):
@@ -42,7 +43,7 @@ def disp_model(model):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def disp_img_processing(model, camera_id):
+async def disp_img_processing(model, camera_id):
     cap = cv2.VideoCapture(camera_id) # Change this depending on device and camera used
     while (True):
         ret , frame = cap.read()
@@ -54,7 +55,7 @@ def disp_img_processing(model, camera_id):
         #blur = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
         edges = cv2.Canny(grey,50,150,apertureSize = 3)
         lines = cv2.HoughLines(edges,1,np.pi/180,model.line_detection_threshold)
-
+        
         #checking for best line:
         #line with higest accumulator value is first in the list of lines[]
         if lines is not None:
@@ -104,7 +105,7 @@ def disp_img_processing(model, camera_id):
     cap.release()
     cv2.destroyAllWindows()
 
-def disp_edge_detection(model, camera_id):
+async def disp_edge_detection(model, camera_id):
     cap = cv2.VideoCapture(camera_id) # Change this depending on device and camera used
     while (True):
         ret , frame = cap.read()
@@ -115,9 +116,11 @@ def disp_edge_detection(model, camera_id):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
         lower_green = np.array([model.h_lower_thresh,model.s_lower_thresh,model.v_lower_thresh])
         upper_green = np.array([model.h_upper_thresh,model.s_upper_thresh,model.v_upper_thresh])
+        hsv = cv2.GaussianBlur(hsv,(5,5),0)
         mask = cv2.inRange(hsv, lower_green, upper_green) #threshold the image to only show green pixels
+        mask = cv2.GaussianBlur(mask,(5,5),0)
         edges = cv2.Canny(mask,50,150,apertureSize = 3) #find edges with canny
-        lines = cv2.HoughLines(edges,1,np.pi/180,model.line_detection_threshold)
+        lines = cv2.HoughLines(edges,1,np.pi/180,90)
 
         #checking for best line:
         #line with higest accumulator value is first in the list of lines[]
@@ -227,6 +230,6 @@ def disp_current_view():
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    disp_current_view()
-    disp_img_processing()
+    asyncio.run(disp_current_view())
+    asyncio.run(disp_img_processing())
     disp_model()

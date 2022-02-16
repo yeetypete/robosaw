@@ -70,8 +70,9 @@ def check_for_edge(cap, model):
     lower_green = np.array([model.h_lower_thresh,model.s_lower_thresh,model.v_lower_thresh])
     upper_green = np.array([model.h_upper_thresh,model.s_upper_thresh,model.v_upper_thresh])
     mask = cv2.inRange(hsv, lower_green, upper_green) #threshold the image to only show green pixels
+    mask = cv2.GaussianBlur(mask,(5,5),0)
     edges = cv2.Canny(mask,50,150,apertureSize = 3) #find edges with canny
-    lines = cv2.HoughLines(edges,1,np.pi/180,model.line_detection_threshold)
+    lines = cv2.HoughLines(edges,1,np.pi/180,model.line_detection_threshold - 100)
 
     #checking for best line:
     #line with higest accumulator value is first in the list of lines[]

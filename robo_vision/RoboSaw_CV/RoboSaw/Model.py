@@ -7,14 +7,16 @@ class Model(object):
     dist_from_blade = None
     blade_theta = None
     crop_x1 = None
-    line_detection_threshold = 100
+    line_detection_threshold = 80 #100
     line_detect_camera_id = 0
     min_angle_diff = 1
     min_dist_diff = 10
 
     #colorspace threshold for edge detection
-    h_lower_thresh = 30
-    h_upper_thresh = 100
+    green_h = 90
+    green_buff = 5
+    h_lower_thresh = green_h - green_buff
+    h_upper_thresh = green_h + green_buff
     s_lower_thresh = 0
     s_upper_thresh = 255
     v_lower_thresh = 0
