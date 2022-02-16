@@ -17,10 +17,10 @@ class Model(object):
     green_buff = 5
     h_lower_thresh = green_h - green_buff
     h_upper_thresh = green_h + green_buff
-    s_lower_thresh = 0
-    s_upper_thresh = 255
-    v_lower_thresh = 0
-    v_upper_thresh = 255
+    s_lower_thresh = 10
+    s_upper_thresh = 250
+    v_lower_thresh = 10
+    v_upper_thresh = 250
     # constructor
     def __init__(self,initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,DETECTION_THRESHOLD):
         self.blade_angle = initial_angle
