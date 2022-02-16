@@ -10,12 +10,12 @@ async def main():
     CAMERA_ID = 1 # change this depending on which camera to use, default to zero
     Y_OFFSET = 50 # pixels from top of frame: negative -> above the border | positive -> below the border
     X_OFFSET = 500 # pixels from left edge of frame: negative -> left of the edge | positive -> to the right of the edge
-    DETECTION_THRESHOLD = 180 # threshold for line detection -> minimum accumulator value
+    LINE_DETECTION_THRESHOLD = 180 # threshold for line detection -> minimum accumulator value
 
     initial_angle = -45 # angle of the blade at startup: get this from Dylan
 
     # generate a model based on initial conditions
-    model = Model(initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,DETECTION_THRESHOLD)
+    model = Model(initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,LINE_DETECTION_THRESHOLD)
 
     # start camera feed
     cap = rv.start_camera_feed(CAMERA_ID)

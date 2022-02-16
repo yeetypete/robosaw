@@ -44,6 +44,7 @@ def disp_model(model):
     cv2.destroyAllWindows()
 
 async def disp_img_processing(model, camera_id):
+    """ Displays the process for detecting the drawn line on the wood """
     cap = cv2.VideoCapture(camera_id) # Change this depending on device and camera used
     while (True):
         ret , frame = cap.read()
@@ -106,6 +107,7 @@ async def disp_img_processing(model, camera_id):
     cv2.destroyAllWindows()
 
 async def disp_edge_detection(model, camera_id):
+    """ Displays the process for detecting the edge of the wood """
     cap = cv2.VideoCapture(camera_id) # Change this depending on device and camera used
     while (True):
         ret , frame = cap.read()
