@@ -13,14 +13,24 @@ class Model(object):
     min_dist_diff = 10
 
     #colorspace threshold for edge detection
-    green_h = 90
-    green_buff = 5
-    h_lower_thresh = green_h - green_buff
-    h_upper_thresh = green_h + green_buff
-    s_lower_thresh = 10
-    s_upper_thresh = 250
-    v_lower_thresh = 10
-    v_upper_thresh = 250
+    #green_h = 90
+    #green_buff = 3
+    # red isolation [[0, 104, 179], [179, 255, 255]]
+    # for green background [[69, 33, 57], [98, 211, 218]]
+    h_lower_thresh = 0#green_h - green_buff
+    h_upper_thresh = 179#green_h + green_buff
+    s_lower_thresh = 104
+    s_upper_thresh = 255
+    v_lower_thresh = 179
+    v_upper_thresh = 255
+
+    # cropping values
+    # 4x4 use [[19, 399], [82, 596]]
+    top = 19 #166
+    bottom = 399 #309
+    left = 82 #197
+    right = 596 #522
+
     # constructor
     def __init__(self,initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,DETECTION_THRESHOLD):
         self.blade_angle = initial_angle
