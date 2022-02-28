@@ -24,7 +24,8 @@ def main():
     model.set_detected_theta(-np.pi/4)
     model.set_blade_angle(model.blade_angle)
 
-    # open a camera feed
+    # open a camera feed 
+    # do this before the motor control loop
     cap = cv2.VideoCapture(CAMERA_ID)
     if not cap.isOpened():
         raise IOError("Cannot open webcam")
