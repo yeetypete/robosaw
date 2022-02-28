@@ -32,7 +32,7 @@ def main():
     while True:
         line = rv.check_for_line(model, cap) # line contains [Line detected T/F , Distance of line from center of camera frame , angle of that line]
         if(line[0]):
-            print("Distance: [" + str(line[1]) + "] pixels")
+            print("Distance: [" + str(line[1]) + "] Angle: [" + str(line[2]) + "]")
 
 
 if __name__ == "__main__":
