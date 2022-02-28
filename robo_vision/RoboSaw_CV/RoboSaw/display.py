@@ -46,12 +46,13 @@ def disp_model(model):
 def disp_img_processing(model, cap):
     """ Displays the process for detecting the drawn line on the wood """
     ret , frame = cap.read()
+    frame = frame[model.top:model.bottom, model.left:model.right]
     detected_angle = 0
     angle = 0
 
     #image processing:
     grey = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-    #blur = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
+    grey = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
     edges = cv2.Canny(grey,50,150,apertureSize = 3)
     lines = cv2.HoughLines(edges,1,np.pi/180,model.line_detection_threshold)
         
@@ -103,6 +104,7 @@ def disp_edge_detection(model, cap):
     """ Displays the process for detecting the edge of the wood """
 
     ret , frame = cap.read()
+    frame = frame[model.top:model.bottom, model.left:model.right]
     detected_angle = 0
     angle = 0
 
@@ -223,7 +225,8 @@ def disp_current_view():
 def disp_final(model, camera_id):
     """ Displays the process for detecting the edge of the wood """
     cap = cv2.VideoCapture(camera_id) # Change this depending on device and camera used
-
+    #ret = cap.set(cv2.CAP_PROP_FRAME_WIDTH,320)
+    #ret = cap.set(cv2.CAP_PROP_FRAME_HEIGHT,240)
     while(True):
         line = disp_img_processing(model, cap)
         edge = disp_edge_detection(model, cap)
