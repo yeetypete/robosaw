@@ -30,6 +30,7 @@ def main():
     if not cap.isOpened():
         raise IOError("Cannot open webcam")
 
+    # motor control can go in here
     while True:
         line = rv.check_for_line(model, cap) # line contains [Line detected T/F , Distance of line from center of camera frame , angle of that line]
         if(line[0]):
