@@ -121,38 +121,39 @@ def readEncoder():
 
 
 try:
-    #while True:
-    #    e1_error = TARGET - cb1.tally()
-    #    motors.motor1.setSpeed(e1_error * KP)
-    #    cb1.reset_tally()
-    #    time.sleep(SAMPLETIME)
-    currT = round(time.time() * 1000)
-    deltaT = (currT - tprev) / 1000000
-    tprev = currT
+    while True:
+        
+        currT = round(time.time() * 1000)
+        deltaT = (currT - tprev) / 1000000
+        tprev = currT
 
-    e = posi - TARGET
-    dedt = (e-eprev)/(detlaT)
+        e = posi - TARGET
+        dedt = (e-eprev)/(detlaT)
 
-    eintegral = eintegral + e*deltaT
+        eintegral = eintegral + e*deltaT
 
-    u = KP * e + KD*dedt + KI*eintegral
+        u = KP * e + KD*dedt + KI*eintegral
 
+        #motors.setSpeeds(u, u)
+
+        eprev = e
+        time.sleep(SAMPLETIME)
         #e2_error = TARGET - cb
-    if (args.motor == 1):
-        motors.motor1.setSpeed(args.speed)
-        time.sleep(args.period)
-        motors.motor1.setSpeed(0)
-    elif (args.motor == 2):
-        motors.motor2.setSpeed(args.speed)
-        time.sleep(args.period)
-        motors.motor2.setSpeed(0)
-    elif (args.motor == 3):
-        motor3.setSpeed(args.speed)
-        time.sleep(args.period)
-        motor3.setSpeed(0)
+    # if (args.motor == 1):
+    #     motors.motor1.setSpeed(args.speed)
+    #     time.sleep(args.period)
+    #     motors.motor1.setSpeed(0)
+    # elif (args.motor == 2):
+    #     motors.motor2.setSpeed(args.speed)
+    #     time.sleep(args.period)
+    #     motors.motor2.setSpeed(0)
+    # elif (args.motor == 3):
+    #     motor3.setSpeed(args.speed)
+    #     time.sleep(args.period)
+    #     motor3.setSpeed(0)
 
 
-    eprev = e
+   
     # if args.speed > 0:
     #     for i in range(0,args.speed,1):
     #         motors.motor1.setSpeed(i)
