@@ -17,11 +17,15 @@ _pin_M3EN = 17
 _pin_M3PWM = 20
 _pin_M3FLT = 7
 
-#_pin_ENC1 = 
-#_pin_ENC2 = 
+#_pin_ENC1A =
+#_pin_ENC1B =
+#_pin_ENC2A =
+#_pin_ENC2B =  
 
 TARGET = 45
 KP = 0.02
+KD = 0.01
+KI = 0.0
 SAMPLETIME = 1
 
 posi = 0
@@ -35,7 +39,7 @@ if not _pi.connected:
 
 # Callback that increments on either rising or falling edge to count encoder steps
 # Call cb1.tally() to get count and cb1.reset_tally() to reset count 
-#cb1 = _pi.callback(_pin_ENC1, EITHER_EDGE)
+cb1 = _pi.callback(_pin_ENC1, RISING_EDGE, readEncoder)
 #cb2 = _pi.callback(_pin_ENC2, EITHER_EDGE)
 
 class Actuator(object):
@@ -96,6 +100,13 @@ def raiseIfFault():
     if motors.motor2.getFault():
         raise DriverFault(2)
 
+def readEncoder():
+    b = _pi.read(_pin_ENC1B)
+    if (b > 0):
+        posi += 1
+    else:
+        posi -= 1
+
 # class Encoder(object):
 #     def __init__(self, pin):
 #         self._value = 0
@@ -115,6 +126,16 @@ try:
     #    motors.motor1.setSpeed(e1_error * KP)
     #    cb1.reset_tally()
     #    time.sleep(SAMPLETIME)
+    currT = round(time.time() * 1000)
+    deltaT = (currT - tprev) / 1000000
+    tprev = currT
+
+    e = posi - TARGET
+    dedt = (e-eprev)/(detlaT)
+
+    eintegral = eintegral + e*deltaT
+
+    u = KP * e + KD*dedt + KI*eintegral
 
         #e2_error = TARGET - cb
     if (args.motor == 1):
@@ -129,6 +150,9 @@ try:
         motor3.setSpeed(args.speed)
         time.sleep(args.period)
         motor3.setSpeed(0)
+
+
+    eprev = e
     # if args.speed > 0:
     #     for i in range(0,args.speed,1):
     #         motors.motor1.setSpeed(i)
