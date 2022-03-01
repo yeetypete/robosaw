@@ -21,6 +21,11 @@ def raiseIfFault():
     if motors.motor2.getFault():
         raise DriverFault(2)
 
+# pigpio initialization for GPIO pins
+_pi = pigpio.pi()
+if not _pi.connected:
+    raise IOError("Can't connect to pigpio")
+
 class Actuator(object):
     MAX_SPEED = 480
 
@@ -67,7 +72,7 @@ class Actuator(object):
 
 def main():
     MAX_ANGLE = 10 # maximum angle that the blade can rotate for a miter cut
-    CAMERA_ID = 1 # change this depending on which camera to use, default to zero, 1 for external usb camera
+    CAMERA_ID = 0 # change this depending on which camera to use, default to zero, 1 for external usb camera
     Y_OFFSET = 50 # pixels from top of frame: negative -> above the border | positive -> below the border
     X_OFFSET = 500 # pixels from left edge of frame: negative -> left of the edge | positive -> to the right of the edge
     LINE_DETECTION_THRESHOLD = 50 # threshold for line detection -> minimum accumulator value for Hough Lines algo.
@@ -121,11 +126,6 @@ def main():
     if not cap.isOpened():
         raise IOError("Cannot open webcam")
 
-    # pigpio initialization for GPIO pins
-    _pi = pigpio.pi()
-    if not _pi.connected:
-        raise IOError("Can't connect to pigpio")
-
     # Define a custom exception to raise if a fault is detected.
     class DriverFault(Exception):
         def __init__(self, driver_num):
@@ -151,7 +151,7 @@ def main():
 
     # PROTOTYPE TESTING SETUP - feed at constant speed, stop when line detected, actuate saw, stop
     # Uncomment for constant feed at 300 speed (speed: 0-480)
-    # motors.setSpeeds(args.speed, args.speed)
+    motors.setSpeeds(args.speed, args.speed)
 
     while True:
         try:
