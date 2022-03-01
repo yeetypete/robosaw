@@ -26,10 +26,10 @@ class Model(object):
 
     # cropping values
     # 4x4 use [[19, 399], [82, 596]]
-    top = 19 #166
-    bottom = 399 #309
-    left = 82 #197
-    right = 596 #522
+    top = 153 #166
+    bottom = 320 #309
+    left = 130 #197
+    right = 532 #522
 
     # constructor
     def __init__(self,initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,DETECTION_THRESHOLD):

@@ -27,7 +27,7 @@ def main():
     model.set_detected_theta(-np.pi/4)
     model.set_blade_angle(model.blade_angle)
 
-    #display.disp_final(model, CAMERA_ID)
+    display.disp_final(model, CAMERA_ID)
     #await asyncio.gather(display.disp_img_processing(model, CAMERA_ID), display.disp_edge_detection(model, CAMERA_ID))
     
     #display.disp_img_processing(model, cap)
