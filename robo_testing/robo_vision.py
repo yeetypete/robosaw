@@ -37,9 +37,10 @@ def find_dist_from_center(center, y_off, rho, theta):
 
 def check_for_line(model, cap):
     ret , frame = cap.read()
+    frame_width_original = frame.shape[1]
+    center = int(frame_width_original/2)
     frame = frame[model.top:model.bottom, model.left:model.right]
-    frame_width = frame.shape[1]
-    center = int(frame_width/2)
+    
     
     line_detected = False
     out_angle = None
