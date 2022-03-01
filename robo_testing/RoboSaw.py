@@ -1,5 +1,5 @@
-from Model import Model
 from __future__ import print_function
+from Model import Model
 import robo_vision as rv
 import display
 import numpy as np
@@ -22,7 +22,7 @@ def raiseIfFault():
         raise DriverFault(2)
 
 class Actuator(object):
-    MAX_SPEED = _max_speed
+    MAX_SPEED = 480
 
     def __init__(self, pwm_pin, dir_pin, en_pin, flt_pin):
         self.pwm_pin = pwm_pin
@@ -73,8 +73,6 @@ def main():
     LINE_DETECTION_THRESHOLD = 50 # threshold for line detection -> minimum accumulator value for Hough Lines algo.
 
     initial_angle = -45 # angle of the blade at startup: get this from Dylan
-
-    _max_speed = 480
 
     # Motor encoder pin assignments (still not assigned)
     #_pin_ENC1A =
