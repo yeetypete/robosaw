@@ -66,13 +66,16 @@ class Actuator(object):
         self.setSpeed(0)
 
 def main():
-    MAX_ANGLE = 10 # maximum angle that the blade can rotate for a miter cut
-    CAMERA_ID = 0 # change this depending on which camera to use, default to zero, 1 for external usb camera
+    MAX_ANGLE = 30 # maximum angle that the blade can rotate for a miter cut
     Y_OFFSET = 50 # pixels from top of frame: negative -> above the border | positive -> below the border
     X_OFFSET = 500 # pixels from left edge of frame: negative -> left of the edge | positive -> to the right of the edge
     LINE_DETECTION_THRESHOLD = 50 # threshold for line detection -> minimum accumulator value for Hough Lines algo.
 
     initial_angle = -45 # angle of the blade at startup: get this from Dylan
+
+    # generate a model based on initial conditions
+    model = Model(initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,LINE_DETECTION_THRESHOLD)
+    CAMERA_ID = model.camera_id
 
     # Motor encoder pin assignments (still not assigned)
     #_pin_ENC1A =

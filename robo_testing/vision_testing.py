@@ -6,17 +6,17 @@ import cv2
 import asyncio
 
 def main():
-    MAX_ANGLE = 10 # maximum angle that the blade can rotate for a miter cut
-    CAMERA_ID = 0 # change this depending on which camera to use, default to zero, 1 for external usb camera
+    MAX_ANGLE = 30 # maximum angle that the blade can rotate for a miter cut
+    CAMERA_ID =  0# change this depending on which camera to use, default to zero, 1 for external usb camera
     Y_OFFSET = 50 # pixels from top of frame: negative -> above the border | positive -> below the border
     X_OFFSET = 500 # pixels from left edge of frame: negative -> left of the edge | positive -> to the right of the edge
-    LINE_DETECTION_THRESHOLD = 50 # threshold for line detection -> minimum accumulator value for Hough Lines algo.
+    LINE_DETECTION_THRESHOLD = 10 # threshold for line detection -> minimum accumulator value for Hough Lines algo.
 
     initial_angle = -45 # angle of the blade at startup: get this from Dylan
 
     # generate a model based on initial conditions
     model = Model(initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,LINE_DETECTION_THRESHOLD)
-
+    CAMERA_ID =  model.camera_id
     # start camera feed
     #cap = rv.start_camera_feed(CAMERA_ID)
 

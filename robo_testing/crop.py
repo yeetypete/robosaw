@@ -1,6 +1,7 @@
 # Calibrate the camera for cropping the frame
 # press 's' key to save the calibration
 # press 'esc' key to exit
+from Model import Model
 import cv2
 import numpy as np
 import time
@@ -9,9 +10,8 @@ def nothing(x):
     pass
 
 # Initializing the camera feed.
-cap = cv2.VideoCapture(0)
-#cap.set(3,1280)
-#cap.set(4,720)
+cap = cv2.VideoCapture(1) ########################################
+
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 # Create a window named trackbars.

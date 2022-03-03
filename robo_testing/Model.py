@@ -1,5 +1,5 @@
 import numpy as np
-
+import cv2
 class Model(object):
     """RoboSaw environment model"""
     detected_rho = None
@@ -11,6 +11,12 @@ class Model(object):
     line_detect_camera_id = 0
     min_angle_diff = 1
     min_dist_diff = 10
+
+
+    ###########################
+    camera_id = 1
+    ###########################
+
 
     #colorspace threshold for edge detection
     #green_h = 90
@@ -45,6 +51,14 @@ class Model(object):
 
     
     # methods
+    def img_proc_line_detect(self,frame):
+        #image processing:
+        grey = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+        #grey = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
+        edges = cv2.Canny(grey,50,150,apertureSize = 3)
+        lines = cv2.HoughLines(edges,1,np.pi/180,self.line_detection_threshold)
+        return lines
+
     def set_line_detect_camera_id(self, cam_id):
         self.line_detect_camera_id = cam_id
 

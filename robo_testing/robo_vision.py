@@ -46,11 +46,8 @@ def check_for_line(model, cap):
     out_angle = None
     out_distance = None
     
-    #image processing:
-    grey = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-    grey = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
-    edges = cv2.Canny(grey,50,150,apertureSize = 3)
-    lines = cv2.HoughLines(edges,1,np.pi/180,model.line_detection_threshold)
+    # image processing
+    lines = model.img_proc_line_detect(frame)
 
     #checking for best line:
     #line with higest accumulator value is first in the list of lines[]
