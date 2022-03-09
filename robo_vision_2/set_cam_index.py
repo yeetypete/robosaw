@@ -20,7 +20,7 @@ def display_by_index(cam_id):
 print("How many cameras are connected?: ")
 count = int(input())
 
-for cam_id in range(count):
+for cam_id in range(count,2):
     print("Opening camera "+ str(cam_id)+"...")
     display_by_index(cam_id)
 
