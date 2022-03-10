@@ -4,9 +4,9 @@ import time
 import sys
 
 ################################################
-color_cam_id = 11
-angle_cam_id = 4
-center_cam_id = 9
+color_cam_id = 2
+angle_cam_id = 0
+center_cam_id = 4
 thearray = [color_cam_id, angle_cam_id, center_cam_id]
 
 print(thearray)
