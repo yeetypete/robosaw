@@ -70,7 +70,7 @@ while True:
     stacked = np.hstack((mask_3,frame,res))
     
     # Show this stacked frame at 40% of the size.
-    cv2.imshow('Set Color Mask',cv2.resize(stacked,None,fx=0.4,fy=0.4))
+    cv2.imshow('Set Color Mask',cv2.resize(stacked,None,fx=0.7,fy=0.7))
     
     # If the user presses ESC then exit the program
     key = cv2.waitKey(1)

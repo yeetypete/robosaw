@@ -6,6 +6,9 @@ import sys
 def display_by_index(cam_id):
     name = "Camera ID: " + str(cam_id)
     cap = cv2.VideoCapture(cam_id)
+    if not cap.isOpened():
+        print("Cannot open camera")
+        exit()
     print("\nPress 'q' to close display window")
 
     while True:
@@ -20,9 +23,9 @@ def display_by_index(cam_id):
 print("How many cameras are connected?: ")
 count = int(input())
 
-#for cam_id in range(count):
- #   print("Opening camera "+ str(cam_id)+"...")
-  #  display_by_index(cam_id)
+for cam_id in range(count):
+    print("Opening camera "+ str(cam_id)+"...")
+    display_by_index(cam_id)
 
 print("Assign each camera the correct index.\n")
 print("Enter the index ID for color_cam: ")
@@ -52,5 +55,5 @@ if key == 's':
     thearray = [color_cam_id, angle_cam_id, center_cam_id] 
     # Also save this array as .npy
     np.save('__calibrate__/color_angle_center_cam_id_array',thearray)
-    print(str(thearray) + "Saved")
+    print(str(thearray) + ": Saved")
     sys.exit()
