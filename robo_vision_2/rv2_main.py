@@ -26,7 +26,9 @@ def main():
 
             # Find the distance of the line from the blade's plane of intersection
         #rv.display_center_cap(model,caps[2])
-        rv.find_center_display(model,caps[2])
+        #rv.find_center_display(model,caps[2])
+        dist = rv.find_distance(model,caps[2])
+        print("Distance: " + str(dist))
 
             # Close the captures before terminating!
         for cap in caps:

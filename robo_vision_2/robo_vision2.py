@@ -129,7 +129,7 @@ def find_center_display(model,cap):
             break
 
 def find_angle(model,cap):
-    """ If an angleis detected returns the angle that the saw should rotate to 
+    """ If an angle is detected returns the angle that the saw should rotate to 
     Else returns None """
     ret , frame = cap.read()
     if not ret:
@@ -140,6 +140,19 @@ def find_angle(model,cap):
     angle = model.get_saw_angle(line)
     cv2.destroyAllWindows()
     return angle
+
+def find_distance(model,cap):
+    """ If edge is detected return its distance from the blade
+    Else return None """
+    ret , frame = cap.read()
+    if not ret:
+            print("No frame captured: ret is False")
+            return None
+    lines = model.img_proc_line_detect_center(frame)
+    line = model.get_best_line(lines)
+    distance = model.find_dist_from_center(line)
+    cv2.destroyAllWindows()
+    return distance
 
 def img_proc_display(model,cap):
     while True:

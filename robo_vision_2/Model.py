@@ -166,6 +166,8 @@ class Model(object):
         -- the offset poit is adjustable to calibrate the saw
         -- the offset is the pivot point of the saw's turntable
         -- returns how far the line intersection point is from the center of the frame """ 
+        if line is None:
+            return None
         rho = line[0]
         theta = line[1]
         center = self.circle_x
