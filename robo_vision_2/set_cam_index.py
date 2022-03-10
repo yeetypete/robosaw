@@ -21,7 +21,9 @@ def display_by_index(cam_id):
     time.sleep(1)
 
 print("How many cameras are connected?: ")
-count = int(input())
+#count = int(input()) # Use this for windows
+count = 2*int(input()) # Use this for pi
+
 
 for cam_id in range(count):
     print("Opening camera "+ str(cam_id)+"...")
