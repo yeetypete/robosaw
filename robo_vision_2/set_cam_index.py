@@ -24,8 +24,8 @@ print("How many cameras are connected?: ")
 #count = int(input()) # Use this for windows
 count = 2*int(input()) # Use this for pi
 
-
-for cam_id in range(count):
+for cam_id in range(count,2): # Use this for pi
+#for cam_id in range(count): # Use this for windows
     print("Opening camera "+ str(cam_id)+"...")
     display_by_index(cam_id)
 
