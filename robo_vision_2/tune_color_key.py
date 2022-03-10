@@ -37,8 +37,8 @@ while True:
     if not ret:
         break
     # Flip the frame horizontally (Not required)
-    frame = cv2.flip( frame, 1 ) 
-    frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
+    #frame = cv2.flip( frame, 1 ) 
+    #frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
     # Convert the BGR image to HSV image.
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
