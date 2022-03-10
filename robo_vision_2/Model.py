@@ -151,6 +151,8 @@ class Model(object):
         return frame
 
     def crop_circle(self,frame):
+        if frame is None:
+            return frame
         center_coordinates = (self.circle_x,self.circle_y)
         radius = self.circle_rad
         circle_mask = np.zeros(shape=frame.shape, dtype=np.uint8)
