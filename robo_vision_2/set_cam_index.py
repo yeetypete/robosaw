@@ -20,9 +20,9 @@ def display_by_index(cam_id):
 print("How many cameras are connected?: ")
 count = int(input())
 
-for cam_id in range(count,2):
-    print("Opening camera "+ str(cam_id)+"...")
-    display_by_index(cam_id)
+#for cam_id in range(count):
+ #   print("Opening camera "+ str(cam_id)+"...")
+  #  display_by_index(cam_id)
 
 print("Assign each camera the correct index.\n")
 print("Enter the index ID for color_cam: ")
@@ -49,8 +49,8 @@ if key == 27:
     print("Exiting without saving...")
     sys.exit()
 if key == 's':
-    thearray = [color_cam_id, angle_cam_id, center_cam_id]
-    print(str(thearray) + "Saved") 
+    thearray = [color_cam_id, angle_cam_id, center_cam_id] 
     # Also save this array as .npy
     np.save('__calibrate__/color_angle_center_cam_id_array',thearray)
+    print(str(thearray) + "Saved")
     sys.exit()
