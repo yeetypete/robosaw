@@ -27,6 +27,44 @@ def open_cameras(model):
     
     return [color_cap, angle_cap, center_cap]
 
+def display_color_cap(model, cap):
+    print("Displaying cap #" +str(cap) + "\nPress 'q' to close")
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        # if frame is read correctly ret is True
+        if not ret:
+            print("Can't receive frame (stream end?). Exiting ...")
+            break
+ 
+        # Display the resulting frame
+        frame = frame[model.top_color_cam:model.bottom_color_cam, model.left_color_cam:model.right_color_cam]
+        cv2.imshow("Press 'q' to quit", frame)
+        if cv2.waitKey(1) == ord('q'):
+            break
+    # When everything done, release the capture
+    #cap.release()
+    cv2.destroyAllWindows()
+
+def display_center_cap(model, cap):
+    print("Displaying cap #" +str(cap) + "\nPress 'q' to close")
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        # if frame is read correctly ret is True
+        if not ret:
+            print("Can't receive frame (stream end?). Exiting ...")
+            break
+        # Crop circle
+        frame = model.crop_circle(frame)
+        # Display the resulting frame
+        cv2.imshow("Press 'q' to quit", frame)
+        if cv2.waitKey(1) == ord('q'):
+            break
+    # When everything done, release the capture
+    #cap.release()
+    cv2.destroyAllWindows()
+
 def display_cap(model, cap):
     print("Displaying cap #" +str(cap) + "\nPress 'q' to close")
     while True:
@@ -42,7 +80,7 @@ def display_cap(model, cap):
         if cv2.waitKey(1) == ord('q'):
             break
     # When everything done, release the capture
-    cap.release()
+    #cap.release()
     cv2.destroyAllWindows()
 
 def find_angle_display(model,cap):
@@ -54,21 +92,87 @@ def find_angle_display(model,cap):
         # crop
         #frame = frame[model.top_angle_cam:model.bottom_angle_cam, model.left_angle_cam:model.right_angle_cam]
 
-        line_detected = False
-        out_angle = None
-
-        lines = model.img_proc_line_detect(frame)
+        lines = model.img_proc_angle_detect(frame)
         line = model.get_best_line(lines)
-        angle = model.get_saw_angle(line)
+        
+        if line is not None:
+            frame = model.add_line_angle(frame,line)
 
-        if angle is not None:
-            frame = model.show_line(frame,line)
-
-        print("Angle: " + str(angle))
 
         cv2.imshow('RoboVision: press "q" to quit', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            cap.release()
+            #cap.release()
             cv2.destroyAllWindows()
             break
 
+def find_center_display(model,cap):
+    while True:
+        # get frame
+        ret , frame = cap.read()
+        if not ret:
+            print("No frame captured: ret is False")
+        # crop
+        frame = model.crop_circle(frame)
+
+        # find line
+        lines = model.img_proc_line_detect_center(frame)
+        line = model.get_best_line(lines)
+        
+        if line is not None:
+            frame = model.add_line_distance(frame,line)
+            
+
+        cv2.imshow('RoboVision: press "q" to quit', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            #cap.release()
+            cv2.destroyAllWindows()
+            break
+
+def find_angle(model,cap):
+    """ If an angleis detected returns the angle that the saw should rotate to 
+    Else returns None """
+    ret , frame = cap.read()
+    if not ret:
+            print("No frame captured: ret is False")
+            return None
+    lines = model.img_proc_angle_detect(frame)
+    line = model.get_best_line(lines)
+    angle = model.get_saw_angle(line)
+    cv2.destroyAllWindows()
+    return angle
+
+def img_proc_display(model,cap):
+    while True:
+        # get frame
+        ret , frame = cap.read()
+        if not ret:
+            print("No frame captured: ret is False")
+            return None
+        # crop
+        #frame = frame[model.top_angle_cam:model.bottom_angle_cam, model.left_angle_cam:model.right_angle_cam]
+
+        frame = model.img_proc(frame)
+
+        cv2.imshow('RoboVision: press "q" to quit', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            #cap.release()
+            cv2.destroyAllWindows()
+            break
+
+def wood_is_loaded(model,cap):
+    ret , frame = cap.read()
+    if not ret:
+            print("No frame captured: ret is False")
+            return False
+    frame = frame[model.top_color_cam:model.bottom_color_cam, model.left_color_cam:model.right_color_cam]
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
+    lower_green = np.array([model.h_lower_thresh,model.s_lower_thresh,model.v_lower_thresh])
+    upper_green = np.array([model.h_upper_thresh,model.s_upper_thresh,model.v_upper_thresh])
+    mask = cv2.inRange(hsv, lower_green, upper_green) #threshold the image to only show green pixels
+    number_of_white_pix = np.sum(mask == 255)
+    if number_of_white_pix < model.color_thresh_wood_detection:
+        print("Wood is loaded")
+        return True
+    else:
+        print("Waiting for you to give me the wood...")
+        return False
