@@ -20,10 +20,10 @@ height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 cv2.namedWindow("Trackbars", cv2.WINDOW_AUTOSIZE)
 
 # trackbars for each edge
-cv2.createTrackbar("left", "Trackbars", 0, int(width/2) - 1, nothing)
-cv2.createTrackbar("right", "Trackbars", 0, int(width/2) - 1, nothing)
-cv2.createTrackbar("top", "Trackbars", 0, int(height/2) - 1, nothing)
-cv2.createTrackbar("bottom", "Trackbars", 0, int(height/2) - 1, nothing)
+cv2.createTrackbar("left", "Trackbars", 0, int(width) - 1, nothing)
+cv2.createTrackbar("right", "Trackbars", 0, int(width) - 1, nothing)
+cv2.createTrackbar("top", "Trackbars", 0, int(height) - 1, nothing)
+cv2.createTrackbar("bottom", "Trackbars", 0, int(height) - 1, nothing)
 
 while True:
     
