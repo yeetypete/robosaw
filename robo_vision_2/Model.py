@@ -240,7 +240,7 @@ class Model(object):
 
     # Other
     line_detection_threshold = 40 #100
-    center_line_detection_threshold = int(circle_rad/3)
+    center_line_detection_threshold = int(circle_rad)
     color_thresh_wood_detection = 20
 
     pass
