@@ -18,11 +18,13 @@ def main():
         wood_loaded = False
         while not wood_loaded: # wait for the wood
             wood_loaded = rv.wood_is_loaded(model,caps[0])
+        caps[0].release()
 
             # Find the angle
         rv.find_angle_display(model,caps[1])
         #angle = rv.find_angle(model,caps[1])
         #print("Angle: " + str(angle))
+        caps[1].release()
 
             # Find the distance of the line from the blade's plane of intersection
         #rv.display_center_cap(model,caps[2])
