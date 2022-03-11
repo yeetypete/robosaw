@@ -13,6 +13,7 @@ cam_id_array = np.load('__calibrate__/color_angle_center_cam_id_array.npy')
 color_cam_id = int(cam_id_array[0])
 print("Color cam ID: " + str(color_cam_id))
 cap = cv2.VideoCapture(color_cam_id)
+time.sleep(2)
 #cap.set(3,1280)
 #cap.set(4,720)
 
