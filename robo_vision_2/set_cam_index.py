@@ -4,24 +4,21 @@ import time
 import sys
 
 ################################################
-color_cam_id = 2
-angle_cam_id = 0
-center_cam_id = 4
-thearray = [color_cam_id, angle_cam_id, center_cam_id]
 
-print(thearray)
-key = input()
-if key == 27:
-    print("Exiting without saving...")
-    sys.exit()
-if key == 's':
-    thearray = [color_cam_id, angle_cam_id, center_cam_id] 
-    # Also save this array as .npy
-    np.save('__calibrate__/color_angle_center_cam_id_array',thearray)
-    print(str(thearray) + ": Saved")
-    sys.exit()
 ################################################
 
+def return_cam_indexes():
+    index = 0
+    arr = []
+    i = 15
+    while i > 0:
+        cap = cv2.VideoCapture(index)
+        if cap.read()[0]:
+            arr.append(index)
+            cap.release()
+        index += 1
+        i -= 1
+    return arr
 
 def display_by_index(cam_id):
     name = "Camera ID: " + str(cam_id)
@@ -40,12 +37,12 @@ def display_by_index(cam_id):
             break;
     time.sleep(1)
 
-print("How many cameras are connected?: ")
+#print("How many cameras are connected?: ")
 #count = int(input()) # Use this for windows
-count = 2*int(input()) # Use this for pi
-
-for cam_id in range(count,2): # Use this for pi
-#for cam_id in range(count): # Use this for windows
+#count = 2*int(input()) # Use this for pi
+cam_indexes = return_cam_indexes()
+print("Camera indexes available: " + str(cam_indexes))
+for cam_id in cam_indexes: # Use this for pi
     print("Opening camera "+ str(cam_id)+"...")
     display_by_index(cam_id)
 
