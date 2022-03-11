@@ -13,7 +13,6 @@ class Model(object):
         ddepth = cv2.CV_16S
         kernel_size = 3
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        frame = cv2.equalizeHist(frame)
         #filter = np.array([[0,0,-1,0,0],[0,-1,-2,-1,0],[-1,-2,16,-2,-1],[0,-1,-2,-1,0],[0,0,-1,0,0]])
         #frame=cv2.filter2D(frame,-1,filter)
         frame = cv2.GaussianBlur(frame, (3, 3), 0)
