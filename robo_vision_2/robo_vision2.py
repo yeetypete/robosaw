@@ -29,6 +29,7 @@ def open_cameras(model):
 
 def display_color_cap(model, cap):
     print("Displaying cap #" +str(cap) + "\nPress 'q' to close")
+    time.sleep(1)
     while True:
         # Capture frame-by-frame
         ret, frame = cap.read()
