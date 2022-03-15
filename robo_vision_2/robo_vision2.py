@@ -178,13 +178,13 @@ def wood_is_loaded(model,cap):
     if not ret:
             print("No frame captured: ret is False")
             return False
-    frame = frame[model.top_color_cam:model.bottom_color_cam, model.left_color_cam:model.right_color_cam]
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
-    lower_green = np.array([model.h_lower_thresh,model.s_lower_thresh,model.v_lower_thresh])
-    upper_green = np.array([model.h_upper_thresh,model.s_upper_thresh,model.v_upper_thresh])
-    mask = cv2.inRange(hsv, lower_green, upper_green) #threshold the image to only show green pixels
-    number_of_white_pix = np.sum(mask == 255)
-    if number_of_white_pix < model.color_thresh_wood_detection:
+    frame1 = frame[model.top_color_cam1:model.bottom_color_cam1, model.left_color_cam1:model.right_color_cam1]
+    hsv1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2HSV) #color space transformation to hsv
+    lower_green = np.array([model.h_lower_thresh1,model.s_lower_thresh1,model.v_lower_thresh1])
+    upper_green = np.array([model.h_upper_thresh1,model.s_upper_thresh1,model.v_upper_thresh1])
+    mask1 = cv2.inRange(hsv1, lower_green, upper_green) #threshold the image to only show green pixels
+    number_of_white_pix1 = np.sum(mask1 == 255)
+    if number_of_white_pix1 < model.color_thresh_wood_detection:
         print("Wood is loaded")
         return True
     else:

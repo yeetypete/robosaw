@@ -205,23 +205,41 @@ class Model(object):
     angle_cam_id = cam_id_array[1]
     center_cam_id = cam_id_array[2]
 
-    # HSV colorspace threshold for wood edge detection
-    hsv = np.load('__calibrate__/hsv_value.npy')
+    # HSV colorspace threshold for wood edge detection bottom color
+    hsv = np.load('__calibrate__/hsv_value1.npy')
 
-    h_lower_thresh = hsv[0][0]
-    h_upper_thresh = hsv[1][0]
-    s_lower_thresh = hsv[0][1]
-    s_upper_thresh = hsv[1][1]
-    v_lower_thresh = hsv[0][2]
-    v_upper_thresh = hsv[1][2]
+    h_lower_thresh1 = hsv[0][0]
+    h_upper_thresh1 = hsv[1][0]
+    s_lower_thresh1 = hsv[0][1]
+    s_upper_thresh1 = hsv[1][1]
+    v_lower_thresh1 = hsv[0][2]
+    v_upper_thresh1 = hsv[1][2]
 
-    # Crop color_cam
-    crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right.npy')
+    # HSV colorspace threshold for wood edge detection top color
+    hsv = np.load('__calibrate__/hsv_value2.npy')
 
-    top_color_cam = crop_vals_color_cam[0][0]
-    bottom_color_cam = crop_vals_color_cam[0][1]
-    left_color_cam = crop_vals_color_cam[1][0]
-    right_color_cam = crop_vals_color_cam[1][1]
+    h_lower_thresh2 = hsv[0][0]
+    h_upper_thresh2 = hsv[1][0]
+    s_lower_thresh2 = hsv[0][1]
+    s_upper_thresh2 = hsv[1][1]
+    v_lower_thresh2 = hsv[0][2]
+    v_upper_thresh2 = hsv[1][2]
+
+    # Crop color_cam1 Crops bottom color
+    crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right1.npy')
+
+    top_color_cam1 = crop_vals_color_cam[0][0]
+    bottom_color_cam1 = crop_vals_color_cam[0][1]
+    left_color_cam1 = crop_vals_color_cam[1][0]
+    right_color_cam1 = crop_vals_color_cam[1][1]
+
+    # Crop color_cam2 Crops top color
+    crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right2.npy')
+
+    top_color_cam2 = crop_vals_color_cam[0][0]
+    bottom_color_cam2 = crop_vals_color_cam[0][1]
+    left_color_cam2 = crop_vals_color_cam[1][0]
+    right_color_cam2 = crop_vals_color_cam[1][1]
 
     # Crop angle_cam
     crop_vals_angle_cam = np.load('__calibrate__/angle_cam_top_bottom_left_right.npy')

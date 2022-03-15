@@ -72,11 +72,13 @@ while True:
     stacked = np.hstack((mask_3,frame,res))
     
     # Show this stacked frame at 40% of the size.
-    cv2.imshow('Set Color Mask',cv2.resize(stacked,None,fx=0.7,fy=0.7))
+    cv2.imshow('Set Top Color Mask, press ESC to close s to save',cv2.resize(stacked,None,fx=0.7,fy=0.7))
     
-    # If the user presses ESC then exit the program
+    # If the user presses ESC or q then exit the program
     key = cv2.waitKey(1)
     if key == 27:
+        break
+    if key == ord('q'):
         break
     
     # If the user presses `s` then print this array.
@@ -86,7 +88,7 @@ while True:
         print(thearray)
         
         # Also save this array as __calibrate__/hsv_value.npy
-        np.save('__calibrate__/hsv_value',thearray)
+        np.save('__calibrate__/hsv_value2',thearray)
         break
     
 # Release the camera & destroy the windows.    

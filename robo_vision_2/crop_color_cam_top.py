@@ -57,7 +57,7 @@ while True:
         print(thearray)
         
         # Also save this array as penval.npy
-        np.save('__calibrate__/color_cam_top_bottom_left_right',thearray)
+        np.save('__calibrate__/color_cam_top_bottom_left_right2',thearray)
         break
     
 # Release the camera & destroy the windows.    
