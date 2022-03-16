@@ -152,7 +152,10 @@ def find_distance(model,cap):
     lines = model.img_proc_line_detect_center(frame)
     line = model.get_best_center_line(lines)
     distance = model.find_dist_from_center(line)
-    cv2.destroyAllWindows()
+    if distance:
+        frame = model.add_line_distance(frame,line)
+        cv2.imshow("Distance",frame)
+    #cv2.destroyAllWindows()
     return distance
 
 def img_proc_display(model,cap):

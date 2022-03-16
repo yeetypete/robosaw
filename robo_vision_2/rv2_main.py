@@ -5,6 +5,7 @@ def main():
         """ Main fn for testing robo vision v2 using multiple cameras """
         ### constants ####
         MAX_ANGLE = 50
+        display = True
         ##################
 
             # Initialize Model object 'model'
@@ -30,13 +31,14 @@ def main():
         #rv.display_center_cap(model,caps[2])
         #rv.find_center_display(model,caps[2])
         while True:
-            dist = rv.find_distance(model,caps[2])
+            dist = rv.find_distance(model,caps[2],display)
             if (dist is not None):
                 dist = -(rv.find_distance(model,caps[2]))
                 #robosaw.feed(dist, args.speed)
                 print("Distance: " + str(dist))
 
-            # Close the captures before terminating!
+            # Close the captures and windows before terminating!
+        cv2.destroyAllWindows()
         for cap in caps:
             print("\nReleasing: " + str(cap) + "...\n")
             cap.release()
