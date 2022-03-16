@@ -18,7 +18,6 @@ def main():
 
 
             # Check if wood is loaded
-        #rv.display_color_cap(model,caps[0])
         wood_loaded = False
         while not wood_loaded: # wait for the wood
             wood_loaded = rv.wood_is_loaded(model,caps[0])
