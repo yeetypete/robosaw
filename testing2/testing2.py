@@ -1,5 +1,5 @@
-from robo_vision_2 import Model
-from robo_vision_2 import robo_vision2 as rv
+from Model import Model
+import robo_vision2 as rv
 
 def main():
         """ Main fn for testing robo vision v2 using multiple cameras """
