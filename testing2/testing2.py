@@ -12,6 +12,10 @@ def main():
 
             # Initialize the camera captures
         caps = rv.open_cameras(model)
+        caps[1].release() # ignore angle for this test
+
+
+
 
             # Check if wood is loaded
         #rv.display_color_cap(model,caps[0])
@@ -20,17 +24,13 @@ def main():
             wood_loaded = rv.wood_is_loaded(model,caps[0])
         caps[0].release()
 
-            # Find the angle
-        rv.find_angle_display(model,caps[1])
-        #angle = rv.find_angle(model,caps[1])
-        #print("Angle: " + str(angle))
-        caps[1].release()
 
             # Find the distance of the line from the blade's plane of intersection
-        #rv.display_center_cap(model,caps[2])
-        rv.find_center_display(model,caps[2])
-        #dist = rv.find_distance(model,caps[2])
-        #print("Distance: " + str(dist))
+        dist = rv.find_distance(model,caps[2])
+        print("Distance: " + str(dist))
+
+
+
 
             # Close the captures before terminating!
         for cap in caps:
