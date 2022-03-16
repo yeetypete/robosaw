@@ -11,8 +11,7 @@ class Model(object):
         print("RoboSaw initializing Model")
 
     def img_proc(self,frame):
-        ddepth = cv2.CV_16S
-        kernel_size = 3
+        """ Image pre-processing for line detection """
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         frame = cv2.GaussianBlur(frame, (3, 3), 0)
         frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
