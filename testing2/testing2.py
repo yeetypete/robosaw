@@ -27,11 +27,13 @@ def main():
 
 
         # Find the distance of the line from the blade's plane of intersection
-    dist = rv.find_distance(model,caps[2])
-    while (dist is not None and dist < 0):
-        dist = -(rv.find_distance(model,caps[2]))
-        robosaw.feed(dist, args.speed)
-        print("Distance: " + str(dist))
+    while True:
+        dist = rv.find_distance(model,caps[2])
+        if (dist is not None):
+            dist = -(rv.find_distance(model,caps[2]))
+            if (dist >= 0):
+                robosaw.feed(dist, args.speed)
+            print("Distance: " + str(dist))
 
         # Close the captures before terminating!
     for cap in caps:
