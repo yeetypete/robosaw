@@ -206,6 +206,7 @@ class Model(object):
     #### Model constants ####
 
     # Get the circle crop values
+    #circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
     circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
     circle_x = circle_crop_arr[0][0]
     circle_y = circle_crop_arr[0][1]
