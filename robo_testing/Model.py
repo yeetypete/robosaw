@@ -1,5 +1,5 @@
 import numpy as np
-
+import cv2
 class Model(object):
     """RoboSaw environment model"""
     detected_rho = None
@@ -12,24 +12,32 @@ class Model(object):
     min_angle_diff = 1
     min_dist_diff = 10
 
+
+    ###########################
+    camera_id = 1
+    ###########################
+
+
     #colorspace threshold for edge detection
     #green_h = 90
     #green_buff = 3
     # red isolation [[0, 104, 179], [179, 255, 255]]
-    # for green background [[69, 33, 57], [98, 211, 218]]
-    h_lower_thresh = 0#green_h - green_buff
-    h_upper_thresh = 179#green_h + green_buff
-    s_lower_thresh = 104
-    s_upper_thresh = 255
-    v_lower_thresh = 179
-    v_upper_thresh = 255
+    # for green background [[69, 33, 57], [98, 211, 218]] __calibrate__/hsv_value.npy
+    hsv = np.load('__calibrate__/hsv_value.npy')
+    h_lower_thresh = hsv[0][0]
+    h_upper_thresh = hsv[1][0]
+    s_lower_thresh = hsv[0][1]
+    s_upper_thresh = hsv[1][1]
+    v_lower_thresh = hsv[0][2]
+    v_upper_thresh = hsv[1][2]
 
     # cropping values
     # 4x4 use [[19, 399], [82, 596]]
-    top = 153 #166
-    bottom = 320 #309
-    left = 130 #197
-    right = 532 #522
+    crop_vals = np.load('__calibrate__/top_bottom_left_right.npy')
+    top = crop_vals[0][0]
+    bottom = crop_vals[0][1]
+    left = crop_vals[1][0]
+    right = crop_vals[1][1]
 
     # constructor
     def __init__(self,initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,DETECTION_THRESHOLD):
@@ -43,6 +51,14 @@ class Model(object):
 
     
     # methods
+    def img_proc_line_detect(self,frame):
+        #image processing:
+        grey = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+        #grey = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
+        edges = cv2.Canny(grey,50,150,apertureSize = 3)
+        lines = cv2.HoughLines(edges,1,np.pi/180,self.line_detection_threshold)
+        return lines
+
     def set_line_detect_camera_id(self, cam_id):
         self.line_detect_camera_id = cam_id
 
