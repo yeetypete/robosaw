@@ -1,40 +1,44 @@
 from Model import Model
 import robo_vision2 as rv
+import RoboSaw as robosaw
 
 def main():
-        """ Main fn for testing robo vision v2 using multiple cameras """
-        ### constants ####
-        MAX_ANGLE = 50
-        ##################
+    """ Main fn for testing robo vision v2 using multiple cameras """
+    ### constants ####
+    MAX_ANGLE = 50
+    ##################
 
-            # Initialize Model object 'model'
-        model = Model(MAX_ANGLE)
+        # Initialize Model object 'model'
+    model = Model(MAX_ANGLE)
 
-            # Initialize the camera captures
-        caps = rv.open_cameras(model)
-        caps[1].release() # ignore angle for this test
-
-
+        # Initialize the camera captures
+    caps = rv.open_cameras(model)
+    caps[1].release() # ignore angle for this test
 
 
-            # Check if wood is loaded
-        wood_loaded = False
-        while not wood_loaded: # wait for the wood
-            wood_loaded = rv.wood_is_loaded(model,caps[0])
-        caps[0].release()
+    _pi = robosaw.init_gpio()
+    args = init_args()
+
+        # Check if wood is loaded
+    wood_loaded = False
+    while not wood_loaded: # wait for the wood
+        wood_loaded = rv.wood_is_loaded(model,caps[0])
+    caps[0].release()
 
 
-            # Find the distance of the line from the blade's plane of intersection
+        # Find the distance of the line from the blade's plane of intersection
+    while (dist > 0):
         dist = rv.find_distance(model,caps[2])
+        robosaw.feed(dist, args.speed)
         print("Distance: " + str(dist))
 
+        # Close the captures before terminating!
+    for cap in caps:
+        print("\nReleasing: " + str(cap) + "...\n")
+        cap.release()
 
+    robosaw.motors.forceStop()
 
-
-            # Close the captures before terminating!
-        for cap in caps:
-            print("\nReleasing: " + str(cap) + "...\n")
-            cap.release()
 
 if __name__ == "__main__":
     import time
