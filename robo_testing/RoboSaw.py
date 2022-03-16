@@ -1,7 +1,6 @@
 from __future__ import print_function
 from Model import Model
-import robo_vision as rv
-import display
+import robo_vision2 as rv
 import numpy as np
 import cv2
 import asyncio

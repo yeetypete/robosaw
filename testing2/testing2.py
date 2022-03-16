@@ -17,7 +17,7 @@ def main():
 
 
     _pi = robosaw.init_gpio()
-    args = init_args()
+    args = robosaw.init_args()
 
         # Check if wood is loaded
     wood_loaded = False
@@ -27,8 +27,9 @@ def main():
 
 
         # Find the distance of the line from the blade's plane of intersection
-    while (dist > 0):
-        dist = rv.find_distance(model,caps[2])
+    dist = rv.find_distance(model,caps[2])
+    while (dist is not None and dist < 0):
+        dist = -(rv.find_distance(model,caps[2]))
         robosaw.feed(dist, args.speed)
         print("Distance: " + str(dist))
 
