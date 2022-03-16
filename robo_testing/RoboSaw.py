@@ -10,21 +10,23 @@ import pigpio
 import argparse
 from dual_g2_hpmd_rpi import motors, MAX_SPEED
 
+# linear actuator pin assignments
+_pin_M3DIR = 27
+_pin_M3EN = 17
+_pin_M3PWM = 20
+_pin_M3FLT = 7
+
+# PID parameters
+TARGET = 45
+KP = 0.02
+KD = 0.01
+KI = 0.0
+SAMPLETIME = 1
+
 # Define a custom exception to raise if a fault is detected.
 class DriverFault(Exception):
     def __init__(self, driver_num):
         self.driver_num = driver_num
-
-def raiseIfFault():
-    if motors.motor1.getFault():
-        raise DriverFault(1)
-    if motors.motor2.getFault():
-        raise DriverFault(2)
-
-# pigpio initialization for GPIO pins
-_pi = pigpio.pi()
-if not _pi.connected:
-    raise IOError("Can't connect to pigpio")
 
 class Actuator(object):
     MAX_SPEED = 480
@@ -70,17 +72,31 @@ class Actuator(object):
         _pi = pigpio.pi()
         self.setSpeed(0)
 
-def main():
-    MAX_ANGLE = 30 # maximum angle that the blade can rotate for a miter cut
-    Y_OFFSET = 50 # pixels from top of frame: negative -> above the border | positive -> below the border
-    X_OFFSET = 500 # pixels from left edge of frame: negative -> left of the edge | positive -> to the right of the edge
-    LINE_DETECTION_THRESHOLD = 50 # threshold for line detection -> minimum accumulator value for Hough Lines algo.
+def raiseIfFault():
+    if motors.motor1.getFault():
+        raise DriverFault(1)
+    if motors.motor2.getFault():
+        raise DriverFault(2)
 
-    initial_angle = -45 # angle of the blade at startup: get this from Dylan
+def init_gpio():
+# pigpio initialization for GPIO pins
+    _pi = pigpio.pi()
+    if not _pi.connected:
+        raise IOError("Can't connect to pigpio")
+    return _pi
 
-    # generate a model based on initial conditions
-    model = Model(initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,LINE_DETECTION_THRESHOLD)
-    CAMERA_ID = model.camera_id
+
+def init_args():
+    # Argument parser for testing
+    parser = argparse.ArgumentParser(description='set speed and ramp period parameter')
+    parser.add_argument('speed', metavar='N', type=int, help='speed (-480, 480)')
+    #parser.add_argument('period', metavar='t', type=float, help='period (seconds)')
+    #parser.add_argument('motor', metavar='M', type=int, help='motor (1,2,3)')
+    args = parser.parse_args()
+    return args
+
+
+def feed(distance, speed):
 
     # Motor encoder pin assignments (still not assigned)
     #_pin_ENC1A =
@@ -88,57 +104,12 @@ def main():
     #_pin_ENC2A =
     #_pin_ENC2B =  
 
-    # linear actuator pin assignments
-    _pin_M3DIR = 27
-    _pin_M3EN = 17
-    _pin_M3PWM = 20
-    _pin_M3FLT = 7
-
-    # PID parameters
-    TARGET = 45
-    KP = 0.02
-    KD = 0.01
-    KI = 0.0
-    SAMPLETIME = 1
-
-    posi = 0
-    tprev = 0
-    eprev = 0
-    eintegral = 0
-
-    # Argument parser for testing
-    parser = argparse.ArgumentParser(description='set speed and ramp period parameter')
-    parser.add_argument('speed', metavar='N', type=int, help='speed (-480, 480)')
-    #parser.add_argument('period', metavar='t', type=float, help='period (seconds)')
-    #parser.add_argument('motor', metavar='M', type=int, help='motor (1,2,3)')
-    args = parser.parse_args()
-
-    # generate a model based on initial conditions
-    model = Model(initial_angle,MAX_ANGLE,Y_OFFSET,X_OFFSET,LINE_DETECTION_THRESHOLD)
-
-    model.check_for_hand()
-    if not model.hand_detected: 
-        model.start()
-
-    model.set_detected_theta(-np.pi/4)
-    model.set_blade_angle(model.blade_angle)
-
-    # open a camera feed 
-    # do this before the motor control loop
-    cap = cv2.VideoCapture(CAMERA_ID)
-    if not cap.isOpened():
-        raise IOError("Cannot open webcam")
-
-    # Define a custom exception to raise if a fault is detected.
-    class DriverFault(Exception):
-        def __init__(self, driver_num):
-            self.driver_num = driver_num
-
-    def raiseIfFault():
-        if motors.motor1.getFault():
-            raise DriverFault(1)
-        if motors.motor2.getFault():
-            raise DriverFault(2)
+    # PID parameters (still not set)
+    #posi = 0
+    #tprev = 0
+    #eprev = 0
+    #eintegral = 0
+    
 
     # def readEncoder():
     #     b = _pi.read(_pin_ENC1B)
@@ -150,35 +121,24 @@ def main():
     # motor control can go in here
 
     # Initalize linear actuator
-    motor3 = Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT)
+    #motor3 = Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT)
 
-    # PROTOTYPE TESTING SETUP - feed at constant speed, stop when line detected, actuate saw, stop
-    # Uncomment for constant feed at 300 speed (speed: 0-480)
-    motors.setSpeeds(args.speed, args.speed)
+    speed_buf = speed
 
-    while True:
-        try:
-            line = rv.check_for_line(model, cap) # line contains [Line detected T/F , Distance of line from center of camera frame , angle of that line]
-            if(line[0]):
-                print("Distance: [" + str(line[1]) + "] Angle: [" + str(line[2]) + "]")
-                motors.setSpeeds(0,0)
-                raiseIfFault()
-                # motor3.setSpeed(480)
-                # time.sleep(3)
-                # motor3.setSpeed(-480)
-                # time.sleep(3)
-                # motor3.setSpeed(0)
-                break
-        except DriverFault as e:
-            print("Driver %s fault!" % e.driver_num)
+    # PROTOTYPE TESTING SETUP - feed at constant speed, stop when line detected
+    # Uncomment for constant feed at argument speed (speed: 0-480)
+    #motors.setSpeeds(args.speed, args.speed)
+    if (distance < speed):
+        speed_buf = distance
 
-    motors.forceStop()
-    motor3.forceStop()
-
-
-if __name__ == "__main__":
-    import time
-    s = time.perf_counter()
-    main()
-    elapsed = time.perf_counter() - s
-    print(f"{__file__} executed in {elapsed:0.2f} seconds.")
+    try:
+        motors.setSpeeds(speed_buf,speed_buf)
+        raiseIfFault()
+            # motor3.setSpeed(480)
+            # time.sleep(3)
+            # motor3.setSpeed(-480)
+            # time.sleep(3)
+            # motor3.setSpeed(0)
+    except DriverFault as e:
+        print("Driver %s fault!" % e.driver_num)
+        motors.forceStop()
