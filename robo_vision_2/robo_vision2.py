@@ -117,7 +117,7 @@ def find_center_display(model,cap):
 
         # find line
         lines = model.img_proc_line_detect_center(frame)
-        line = model.get_best_line(lines)
+        line = model.get_best_center_line(lines)
         
         if line is not None:
             frame = model.add_line_distance(frame,line)
@@ -150,7 +150,7 @@ def find_distance(model,cap):
             print("No frame captured: ret is False")
             return None
     lines = model.img_proc_line_detect_center(frame)
-    line = model.get_best_line(lines)
+    line = model.get_best_center_line(lines)
     distance = model.find_dist_from_center(line)
     cv2.destroyAllWindows()
     return distance

@@ -7,35 +7,26 @@ class Model(object):
     #### Functions ####
     def __init__(self, MAX_ANGLE):
         self.max_angle = MAX_ANGLE
+        self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
         print("RoboSaw initializing Model")
 
     def img_proc(self,frame):
         ddepth = cv2.CV_16S
         kernel_size = 3
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #filter = np.array([[0,0,-1,0,0],[0,-1,-2,-1,0],[-1,-2,16,-2,-1],[0,-1,-2,-1,0],[0,0,-1,0,0]])
-        #frame=cv2.filter2D(frame,-1,filter)
         frame = cv2.GaussianBlur(frame, (3, 3), 0)
-
-        #frame = cv2.Laplacian(frame, ddepth, ksize=kernel_size)
-        #frame = cv2.convertScaleAbs(frame)
-
         frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
         frame = cv2.Canny(frame,15,30,apertureSize = 3)
         return frame
 
     def img_proc_angle_detect(self,frame):
         """ Image processing """
-        #grey = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        #grey = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
         edges = self.img_proc(frame)
         lines = cv2.HoughLines(edges,1,np.pi/180,self.line_detection_threshold)
         return lines
 
     def img_proc_line_detect_center(self,frame):
         """ Image processing """
-        #grey = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        #grey = cv2.GaussianBlur(grey,(5,5),cv2.BORDER_DEFAULT)
         edges = self.img_proc(frame)
         lines = cv2.HoughLines(edges,1,np.pi/180,self.center_line_detection_threshold)
         return lines
@@ -46,7 +37,7 @@ class Model(object):
         if lines is not None:
 
             # Start with highest accumulator value and iterate until 
-            # one is found within the max_angle range
+            # one is found within the Model.max_angle range
             for i in range(0,len(lines)):
                 rho = lines[i][0][0]
                 theta = lines[i][0][1]
@@ -58,6 +49,29 @@ class Model(object):
 
                 # Ifthe line is in range return
                 if (abs(angle) < self.max_angle):
+                    return [rho,theta]
+
+            # If no line is found return None
+            return None
+
+    def get_best_center_line(self,lines):
+        """ Returns line = [rho,theta] of best line detected within the Model.min_center_angle range """
+        #line with higest accumulator value is first in the list of lines[]
+        if lines is not None:
+
+            # Start with highest accumulator value and iterate until 
+            # one is found within the max_angle range
+            for i in range(0,len(lines)):
+                rho = lines[i][0][0]
+                theta = lines[i][0][1]
+                angle = np.degrees(abs(theta))
+
+                # correct for weird angle issue
+                if angle > 180-self.max_center_angle:
+                    angle = (angle - 180)
+
+                # Ifthe line is in range return
+                if (abs(angle) < self.max_center_angle):
                     return [rho,theta]
 
             # If no line is found return None
