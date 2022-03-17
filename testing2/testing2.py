@@ -22,6 +22,7 @@ def main():
         # Check if wood is loaded
     wood_loaded = False
     while not wood_loaded: # wait for the wood
+        robosaw.motors.setSpeeds(args.speed, args.speed)
         wood_loaded = rv.wood_is_loaded(model,caps[0])
     caps[0].release()
 
@@ -30,10 +31,13 @@ def main():
     while True:
         dist = rv.find_distance(model,caps[2])
         if (dist is not None):
-            dist = -(rv.find_distance(model,caps[2]))
-            if (dist >= 0):
-                robosaw.feed(dist, args.speed)
+            #dist = -dist
+            if (dist > 0):
+                print("Distance: " + str(dist))
+                break
+            robosaw.feed(abs(dist), int(args.speed))
             print("Distance: " + str(dist))
+            
 
         # Close the captures before terminating!
     for cap in caps:

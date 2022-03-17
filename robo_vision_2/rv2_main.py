@@ -5,7 +5,6 @@ def main():
         """ Main fn for testing robo vision v2 using multiple cameras """
         ### constants ####
         MAX_ANGLE = 50
-        display = True
         ##################
 
             # Initialize Model object 'model'
@@ -25,15 +24,15 @@ def main():
         #rv.find_angle_display(model,caps[1])
         #angle = rv.find_angle(model,caps[1])
         #print("Angle: " + str(angle))
-        caps[1].release()
+        caps[1].release() # Close the angle camera
 
             # Find the distance of the line from the blade's plane of intersection
         #rv.display_center_cap(model,caps[2])
-        #rv.find_center_display(model,caps[2])
+        rv.find_center_display(model,caps[2])
         while True:
-            dist = rv.find_distance(model,caps[2],display)
+            dist = rv.find_distance(model,caps[2])
             if (dist is not None):
-                dist = -(rv.find_distance(model,caps[2]))
+                dist = -dist
                 #robosaw.feed(dist, args.speed)
                 print("Distance: " + str(dist))
 

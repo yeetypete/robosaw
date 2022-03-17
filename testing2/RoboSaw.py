@@ -1,7 +1,6 @@
 from __future__ import print_function
 from Model import Model
-import robo_vision as rv
-import display
+import robo_vision2 as rv
 import numpy as np
 import cv2
 import asyncio
@@ -128,8 +127,8 @@ def feed(distance, speed):
     # PROTOTYPE TESTING SETUP - feed at constant speed, stop when line detected
     # Uncomment for constant feed at argument speed (speed: 0-480)
     #motors.setSpeeds(args.speed, args.speed)
-    if (distance < speed):
-        speed_buf = distance
+    #if (distance < speed):
+    #    speed_buf = distance
 
     try:
         motors.setSpeeds(speed_buf,speed_buf)

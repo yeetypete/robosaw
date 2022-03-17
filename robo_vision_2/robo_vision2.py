@@ -139,7 +139,7 @@ def find_angle(model,cap):
     lines = model.img_proc_angle_detect(frame)
     line = model.get_best_line(lines)
     angle = model.get_saw_angle(line)
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
     return angle
 
 def find_distance(model,cap):
@@ -152,9 +152,6 @@ def find_distance(model,cap):
     lines = model.img_proc_line_detect_center(frame)
     line = model.get_best_center_line(lines)
     distance = model.find_dist_from_center(line)
-    if distance:
-        frame = model.add_line_distance(frame,line)
-        cv2.imshow("Distance",frame)
     #cv2.destroyAllWindows()
     return distance
 
