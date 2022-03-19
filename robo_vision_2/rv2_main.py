@@ -1,5 +1,6 @@
 from Model import Model
 import robo_vision2 as rv
+import cv2
 
 def main():
         """ Main fn for testing robo vision v2 using multiple cameras """
@@ -31,6 +32,10 @@ def main():
         rv.find_center_display(model,caps[2])
         while True:
             dist = rv.find_distance(model,caps[2])
+            # If the user presses ESC then exit the program
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
             if (dist is not None):
                 dist = -dist
                 #robosaw.feed(dist, args.speed)
