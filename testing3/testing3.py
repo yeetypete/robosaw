@@ -29,10 +29,6 @@ def run(model,caps):
     wait for confirmation button,
     make cut, raise blade """
 
-    ### constants ####
-    MAX_ANGLE = 50
-    ##################
-
     _pi = robosaw.init_gpio()
     args = robosaw.init_args()
 
@@ -43,7 +39,7 @@ def run(model,caps):
 
     # Once wood is loaded accumlate angle samples
     angles = []
-    while len(angles) < model.max_angle_samples:
+    while len(angles) < model.num_angle_samples:
         # Get angles as it moves and save to angle[] array
         robosaw.motors.setSpeeds(args.speed, args.speed) # idle
         angle = rv.find_angle(model,caps[1])
