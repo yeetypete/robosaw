@@ -56,7 +56,6 @@ def run(model,caps):
 
     # Move the line close to the center and slow down
     # ... TODO ...
-
     # Stop the wood under the blade
     while True:
         dist = rv.find_distance(model,caps[2])
