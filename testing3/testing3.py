@@ -101,7 +101,6 @@ def close_caps(caps):
 
 
 if __name__ == "__main__":
-    import time
     s = time.perf_counter()
     model,caps = initialize()
     #eject(model,caps) # Runs the feeding mechanism as long as 'feed' button is pressed
