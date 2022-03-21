@@ -61,7 +61,7 @@ def run(model,caps):
     # Move the line close to the center and slow down
     # ... TODO ...
 
-    # Find the distance of the line from the blade's plane of intersection
+    # Stop the wood under the blade
     while True:
         dist = rv.find_distance(model,caps[2])
         if (dist is not None):
@@ -71,10 +71,10 @@ def run(model,caps):
             robosaw.feed(abs(dist), int(args.speed))
             print("Distance: " + str(dist))
 
-    # Calculate overshoot
+    # Calculate overshoot from stop point
     time.sleep(1) # wait a second to see if the wood oversoots
     dist = rv.find_distance(model,caps[2])
-    print("Overshoot/undershoot distance: " + str(dist))
+    print("\nOvershoot/undershoot distance: " + str(dist))
 
     # Spin the blade
     # ... TODO ...
