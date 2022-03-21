@@ -72,11 +72,11 @@ def run(model,caps):
             print("Distance: " + str(dist))
 
     # Calculate overshoot
-    time.sleep(0.5) # wait half a second to see how far the wood oversoots
+    time.sleep(1) # wait a second to see if the wood oversoots
     dist = rv.find_distance(model,caps[2])
     print("Overshoot distance: " + str(abs(dist)))
 
-    # Start the blade spinning
+    # Spin the blade
     # ... TODO ...
 
     # Lower the blade as it spins
@@ -85,15 +85,16 @@ def run(model,caps):
     # Raise blade again
     # ... TODO ...
 
-    # Stop the blade spinning
+    # Stop the blade
     # ... TODO ...
 
     # Eject the wood
     # ... TODO ...
 
-    # Close the captures before terminating!
+def close_caps(caps):
+    """ Close the captures before terminating """
     for cap in caps:
-        print("\nReleasing: " + str(cap) + "...\n")
+        print("\n\nReleasing capture: " + str(cap))
         cap.release()
 
     robosaw.motors.forceStop()
@@ -103,7 +104,8 @@ if __name__ == "__main__":
     import time
     s = time.perf_counter()
     model,caps = initialize()
-    #eject(model,caps)
-    run(model,caps)
+    #eject(model,caps) # Runs the feeding mechanism as long as 'feed' button is pressed
+    run(model,caps) # Once 'Run' button pressed, waits for wood, finds angle, centers under the blade and makes the cut
+    close_caps(caps) # Close cameras before shutting off
     elapsed = time.perf_counter() - s
     print(f"{__file__} executed in {elapsed:0.2f} seconds.")
