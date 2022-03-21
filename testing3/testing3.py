@@ -56,7 +56,7 @@ def run(model,caps):
 
     # Rotate the blade to correct angle
     # ... TODO ...
-    print("\n\nRotate blade to " + str(final_angle) + "degrees.")
+    print("\nRotate blade to " + str(final_angle) + "degrees.")
 
     # Move the line close to the center and slow down
     # ... TODO ...
