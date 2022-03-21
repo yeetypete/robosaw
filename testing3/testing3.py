@@ -56,7 +56,7 @@ def run(model,caps):
 
     # Rotate the blade to correct angle
     # ... TODO ...
-    print("Rotate blade to " + str(final_angle) + "degrees.")
+    print("\n\nRotate blade to " + str(final_angle) + "degrees.")
 
     # Move the line close to the center and slow down
     # ... TODO ...
@@ -74,7 +74,7 @@ def run(model,caps):
     # Calculate overshoot
     time.sleep(1) # wait a second to see if the wood oversoots
     dist = rv.find_distance(model,caps[2])
-    print("Overshoot distance: " + str(abs(dist)))
+    print("Overshoot distance: " + str(-(dist)))
 
     # Spin the blade
     # ... TODO ...
