@@ -45,14 +45,14 @@ def run(model,caps):
         angle = rv.find_angle(model,caps[1])
         angles.append(angle)
     # find most likely angle based on removing outliers and taking the mean
-    final_angle = model.best_angle(angles)
+    blade_angle = model.best_angle(angles)
 
     # Pause the wood from moving
     # ... TODO ...
 
     # Rotate the blade to correct angle
     # ... TODO ...
-    print("\nRotate blade to " + str(final_angle) + "degrees.")
+    print("\nRotate blade to " + str(blade_angle) + "degrees.")
 
     # Move the line close to the center and slow down
     # ... TODO ...
