@@ -47,7 +47,7 @@ def run(model,caps):
     # find most likely angle based on removing outliers and taking the mean
     blade_angle = model.best_angle(angles)
 
-    # Pause the wood from moving
+    # Stop or slow the wood
     # ... TODO ...
 
     # Rotate the blade to correct angle
