@@ -86,6 +86,7 @@ def run(model,caps):
     # Eject the wood
     # ... TODO ...
 
+
 def close_caps(caps):
     """ Close the captures before terminating """
     for cap in caps:

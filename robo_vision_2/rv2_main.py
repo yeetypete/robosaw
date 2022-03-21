@@ -21,11 +21,16 @@ def main():
             wood_loaded = rv.wood_is_loaded(model,caps[0])
         caps[0].release()
 
-            # Find the angle
-        #rv.find_angle_display(model,caps[1])
-        #angle = rv.find_angle(model,caps[1])
-        #print("Angle: " + str(angle))
-        caps[1].release() # Close the angle camera
+        # Once wood is loaded accumlate angle samples
+        angles = []
+        while len(angles) < model.num_angle_samples:
+            # Get angles as it moves and save to angle[] array
+            #robosaw.motors.setSpeeds(args.speed, args.speed) # idle
+            angle = rv.find_angle(model,caps[1])
+            angles.append(angle)
+        # find most likely angle based on removing outliers and taking the mean
+        blade_angle = model.best_angle(angles)
+        print("\n\nBest angle:" + str(blade_angle))
 
             # Find the distance of the line from the blade's plane of intersection
         #rv.display_center_cap(model,caps[2])

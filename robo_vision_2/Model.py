@@ -10,6 +10,16 @@ class Model(object):
         self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
         print("RoboSaw initializing Model")
 
+    def best_angle(self, arr):
+        """ Statistical analysis to find the best angle by removing outliers """
+        elements = np.array(arr)
+        mean = np.mean(elements, axis=0)
+        sd = np.std(elements, axis=0)
+        final_list = [x for x in arr if (x > mean - self.num_stds * sd)]
+        final_list = [x for x in final_list if (x < mean + self.num_stds * sd)]
+        best_angle = np.mean(final_list, axis=0)
+        return best_angle
+
     def img_proc(self,frame):
         """ Image pre-processing for line detection """
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -205,7 +215,10 @@ class Model(object):
 
     #### Model constants ####
 
+    num_angle_samples = 30
+    num_stds = 2
     # Get the circle crop values
+    #circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
     circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
     circle_x = circle_crop_arr[0][0]
     circle_y = circle_crop_arr[0][1]
