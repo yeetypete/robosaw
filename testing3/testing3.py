@@ -47,18 +47,22 @@ def run(model,caps):
     # Check if wood is loaded
     while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
         robosaw.motors.setSpeeds(args.speed, args.speed) # idle
-    #caps[0].release()
+    caps[0].release()
 
     # Once wood is loaded accumlate angle samples
+    #rv.find_angle_display(model,caps[1])
     angles = []
     while len(angles) < model.num_angle_samples:
         # Get angles as it moves and save to angle[] array
         robosaw.motors.setSpeeds(args.speed, args.speed) # idle
         angle = rv.find_angle(model,caps[1])
+        print("Angle: " + str(angle))
         if angle is not None:
+            #blade_angle = angle
             angles.append(angle)
     # find most likely angle based on removing outliers and taking the mean
     blade_angle = model.best_angle(angles)
+    caps[1].release()
 
     # Stop or slow the wood
     # ... TODO ...
@@ -66,15 +70,16 @@ def run(model,caps):
 
     # Rotate the blade to correct angle
     # ... TODO ...
-    print("\nRotate blade to " + str(blade_angle) + "degrees.")
+    print("\nRotate blade to " + str(blade_angle) + " degrees.")
 
     # Move the line close to the center and slow down
     # ... TODO ...
     # Stop the wood under the blade
+    #rv.find_center_display(model,caps[2])
     while True:
         dist = rv.find_distance(model,caps[2])
         if (dist is not None):
-            if (dist > 0):
+            if (dist < 0):
                 print("Distance: " + str(dist))
                 robosaw.motors.setSpeeds(0,0)
                 break

@@ -18,7 +18,7 @@ class Model(object):
         final_list = [x for x in arr if (x > mean - self.num_stds * sd)]
         final_list = [x for x in final_list if (x < mean + self.num_stds * sd)]
         best_angle = np.mean(final_list, axis=0)
-        return best_angle
+        return mean
 
     def img_proc(self,frame):
         """ Image pre-processing for line detection """
@@ -283,7 +283,7 @@ class Model(object):
     right_center_cam = crop_vals_center_cam[1][1]
 
     # Other
-    line_detection_threshold = 40 #100
+    line_detection_threshold = 100 #100
     center_line_detection_threshold = int(circle_rad/2.5)
     color_thresh_wood_detection = 20
 

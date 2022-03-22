@@ -146,6 +146,7 @@ def find_distance(model,cap):
     """ If edge is detected return its distance from the blade
     Else return None """
     ret , frame = cap.read()
+    frame = model.crop_circle(frame)
     if not ret:
             print("No frame captured: ret is False")
             return None
