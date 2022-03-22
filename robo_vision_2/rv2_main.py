@@ -31,7 +31,7 @@ def main():
         # find most likely angle based on removing outliers and taking the mean
         blade_angle = model.best_angle(angles)
         print("\n\nBest angle:" + str(blade_angle))
-
+        caps[1].release()
             # Find the distance of the line from the blade's plane of intersection
         #rv.display_center_cap(model,caps[2])
         rv.find_center_display(model,caps[2])
