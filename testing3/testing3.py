@@ -3,6 +3,14 @@ import robo_vision2 as rv
 import RoboSaw as robosaw
 import time
 
+# linear actuator pin assignments
+_pin_M3DIR = 27
+_pin_M3EN = 17
+_pin_M3PWM = 20
+_pin_M3FLT = 7
+
+#blade_relay_pin = 
+
 def initialize():
     """ Run this first. Returns (model,caps)"""
 
@@ -19,6 +27,9 @@ def initialize():
 def eject(model,caps):
     """ Ejects the wood. Pushes all wood out and raises the blade to default height """
     print("Ejecting wood")
+    robosaw.motors.setSpeeds(args.speed, args.speed)
+    time.sleep(10)
+    robosaw.motors.setSpeeds(0, 0)
     return
 
 def run(model,caps):
@@ -31,6 +42,7 @@ def run(model,caps):
 
     _pi = robosaw.init_gpio()
     args = robosaw.init_args()
+    motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT)
 
     # Check if wood is loaded
     while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
@@ -50,6 +62,7 @@ def run(model,caps):
 
     # Stop or slow the wood
     # ... TODO ...
+    robosaw.motors.setSpeeds(args.speed - 50, args.speed - 50)
 
     # Rotate the blade to correct angle
     # ... TODO ...
@@ -63,8 +76,9 @@ def run(model,caps):
         if (dist is not None):
             if (dist > 0):
                 print("Distance: " + str(dist))
+                robosaw.motors.setSpeeds(0,0)
                 break
-            robosaw.feed(abs(dist), int(args.speed))
+            robosaw.feed(abs(dist), int(args.speed - 50))
             print("Distance: " + str(dist))
 
     # Calculate overshoot from stop point
@@ -74,19 +88,29 @@ def run(model,caps):
 
     # Spin the blade
     # ... TODO ...
+    _pi.write(blade_relay_pin, 1)
 
     # Lower the blade as it spins
     # ... TODO ...
 
+    motor3.setSpeed(480)
+    time.sleep(4)
+
     # Raise blade again
     # ... TODO ...
+    motor3.setSpeed(-480)
+    time.sleep(4)
 
     # Stop the blade
     # ... TODO ...
 
+    _pi.write(blade_relay_pin, 0)
+
     # Eject the wood
     # ... TODO ...
 
+    robosaw.motor2.setSpeed(args.speed)
+    time.sleep(2)
 
 def close_caps(caps):
     """ Close the captures before terminating """

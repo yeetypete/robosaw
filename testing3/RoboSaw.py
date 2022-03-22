@@ -9,11 +9,6 @@ import pigpio
 import argparse
 from dual_g2_hpmd_rpi import motors, MAX_SPEED
 
-# linear actuator pin assignments
-_pin_M3DIR = 27
-_pin_M3EN = 17
-_pin_M3PWM = 20
-_pin_M3FLT = 7
 
 # PID parameters
 TARGET = 45
@@ -133,11 +128,6 @@ def feed(distance, speed):
     try:
         motors.setSpeeds(speed_buf,speed_buf)
         raiseIfFault()
-            # motor3.setSpeed(480)
-            # time.sleep(3)
-            # motor3.setSpeed(-480)
-            # time.sleep(3)
-            # motor3.setSpeed(0)
     except DriverFault as e:
         print("Driver %s fault!" % e.driver_num)
         motors.forceStop()
