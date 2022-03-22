@@ -17,6 +17,7 @@ KD = 0.01
 KI = 0.0
 SAMPLETIME = 1
 
+
 # Define a custom exception to raise if a fault is detected.
 class DriverFault(Exception):
     def __init__(self, driver_num):
@@ -24,15 +25,16 @@ class DriverFault(Exception):
 
 class Actuator(object):
     MAX_SPEED = 480
-
-    def __init__(self, pwm_pin, dir_pin, en_pin, flt_pin):
+    
+    def __init__(self, pwm_pin, dir_pin, en_pin, flt_pin, _pi):
         self.pwm_pin = pwm_pin
         self.dir_pin = dir_pin
         self.en_pin = en_pin
         self.flt_pin = flt_pin
+        self._pi = _pi
 
-        _pi.set_pull_up_down(flt_pin, pigpio.PUD_UP) # make sure FLT is pulled up
-        _pi.write(en_pin, 1) # enable driver by default
+        self._pi.set_pull_up_down(flt_pin, pigpio.PUD_UP) # make sure FLT is pulled up
+        self._pi.write(en_pin, 1) # enable driver by default
 
     def setSpeed(self, speed):
         if speed < 0:
@@ -44,26 +46,26 @@ class Actuator(object):
         if speed > MAX_SPEED:
             speed = MAX_SPEED
 
-        _pi.write(self.dir_pin, dir_value)
+        self._pi.write(self.dir_pin, dir_value)
         #_pi.hardware_PWM(self.pwm_pin, 20000, int(speed * 6250 / 3));
-        _pi.set_PWM_range(self.pwm_pin, 480)
-        _pi.set_PWM_frequency(self.pwm_pin, 20000)
-        _pi.set_PWM_dutycycle(self.pwm_pin, speed)
+        self._pi.set_PWM_range(self.pwm_pin, 480)
+        self._pi.set_PWM_frequency(self.pwm_pin, 20000)
+        self._pi.set_PWM_dutycycle(self.pwm_pin, speed)
           # 20 kHz PWM, duty cycle in range 0-1000000 as expected by pigpio
 
     def enable(self):
-        _pi.write(self.en_pin, 1)
+        self._pi.write(self.en_pin, 1)
 
     def disable(self):
-        _pi.write(self.en_pin, 0)
+        self._pi.write(self.en_pin, 0)
 
     def getFault(self):
-        return not _pi.read(self.flt_pin)
+        return not self._pi.read(self.flt_pin)
 
     def forceStop(self):
         global _pi
-        _pi.stop()
-        _pi = pigpio.pi()
+        self._pi.stop()
+        self._pi = pigpio.pi()
         self.setSpeed(0)
 
 def raiseIfFault():

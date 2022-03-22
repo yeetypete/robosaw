@@ -31,7 +31,7 @@ cv2.createTrackbar("U - H", "Trackbars", 179, 179, nothing)
 cv2.createTrackbar("U - S", "Trackbars", 255, 255, nothing)
 cv2.createTrackbar("U - V", "Trackbars", 255, 255, nothing)
  
-while True:
+while cap.isOpened():
     
     # Start reading the webcam feed frame by frame.
     ret, frame = cap.read()

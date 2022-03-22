@@ -2,6 +2,7 @@ from Model import Model
 import robo_vision2 as rv
 import RoboSaw as robosaw
 import time
+import pigpio
 
 # linear actuator pin assignments
 _pin_M3DIR = 27
@@ -42,12 +43,12 @@ def run(model,caps):
 
     _pi = robosaw.init_gpio()
     args = robosaw.init_args()
-    motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT)
+    motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT, _pi)
 
     # Check if wood is loaded
     while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
         robosaw.motors.setSpeeds(args.speed, args.speed) # idle
-    caps[0].release()
+    #caps[0].release()
 
     # Once wood is loaded accumlate angle samples
     #rv.find_angle_display(model,caps[1])
@@ -70,10 +71,12 @@ def run(model,caps):
 
     # Rotate the blade to correct angle
     # ... TODO ...
-    print("\nRotate blade to " + str(blade_angle) + " degrees.")
+    print("\nRotate blade to " + str(blade_angle) + " degrees.\n")
 
     # Move the line close to the center and slow down
     # ... TODO ...
+    #while not rv.wood_is_under(model,caps[0]):
+        #print("...")
     # Stop the wood under the blade
     #rv.find_center_display(model,caps[2])
     while True:
@@ -99,12 +102,13 @@ def run(model,caps):
     # ... TODO ...
 
     motor3.setSpeed(480)
-    time.sleep(4)
+    time.sleep(1)
 
     # Raise blade again
     # ... TODO ...
     motor3.setSpeed(-480)
-    time.sleep(4)
+    time.sleep(1)
+    motor3.setSpeed(0)
 
     # Stop the blade
     # ... TODO ...
@@ -114,8 +118,8 @@ def run(model,caps):
     # Eject the wood
     # ... TODO ...
 
-    robosaw.motor2.setSpeed(args.speed)
-    time.sleep(2)
+    #robosaw.motors.motor2.setSpeed(args.speed)
+    #time.sleep(2)
 
 def close_caps(caps):
     """ Close the captures before terminating """
