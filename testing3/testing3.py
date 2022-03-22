@@ -9,7 +9,7 @@ _pin_M3EN = 17
 _pin_M3PWM = 20
 _pin_M3FLT = 7
 
-#blade_relay_pin = 
+blade_relay_pin = 26
 
 def initialize():
     """ Run this first. Returns (model,caps)"""
