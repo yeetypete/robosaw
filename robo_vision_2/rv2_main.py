@@ -27,7 +27,8 @@ def main():
             # Get angles as it moves and save to angle[] array
             #robosaw.motors.setSpeeds(args.speed, args.speed) # idle
             angle = rv.find_angle(model,caps[1])
-            angles.append(angle)
+            if angles is not None:
+                angles.append(angle)
         # find most likely angle based on removing outliers and taking the mean
         blade_angle = model.best_angle(angles)
         print("\n\nBest angle:" + str(blade_angle))
