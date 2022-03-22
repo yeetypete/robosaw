@@ -92,7 +92,7 @@ def run(model,caps):
     # Calculate overshoot from stop point
     time.sleep(1) # wait a second to see if the wood oversoots
     dist = rv.find_distance(model,caps[2])
-    print("\nOvershoot/undershoot distance: " + str(dist))
+    print("\nOvershoot/undershoot distance: " + str(-dist))
 
     # Spin the blade
     # ... TODO ...
