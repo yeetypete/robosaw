@@ -218,7 +218,6 @@ class Model(object):
     num_angle_samples = 10
     num_stds = 2
     # Get the circle crop values
-    #circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
     circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
     circle_x = circle_crop_arr[0][0]
     circle_y = circle_crop_arr[0][1]

@@ -24,11 +24,10 @@ def initialize():
 
     return model,caps
     
-
 def close_caps(caps):
     """ Close the captures before terminating """
     for cap in caps:
-        print("\n\nReleasing capture: " + str(cap))
+        print("\nReleasing capture: " + str(cap))
         cap.release()
     robosaw.motors.forceStop()
 
@@ -50,7 +49,7 @@ def run():
     try:
         model,caps = initialize()
     except:
-        print("Unable to initialize model and caps")
+        print("\nUnable to initialize model and caps")
 
     try:
         _pi = robosaw.init_gpio()
@@ -63,7 +62,6 @@ def run():
         #caps[0].release()
 
         # Once wood is loaded accumlate angle samples
-        #rv.find_angle_display(model,caps[1])
         angles = []
         while len(angles) < model.num_angle_samples:
             # Get angles as it moves and save to angle[] array
@@ -87,10 +85,10 @@ def run():
 
         # Move the line close to the center and slow down
         # ... TODO ...
-        #while not rv.wood_is_under(model,caps[0]):
-            #print("...")
+        while not rv.wood_is_under(model,caps[0]):
+            continue # Kepps moving the wood until it is under the center camera
+
         # Stop the wood under the blade
-        #rv.find_center_display(model,caps[2])
         while True:
             dist = rv.find_distance(model,caps[2])
             if (dist is not None):
@@ -106,27 +104,29 @@ def run():
         dist = rv.find_distance(model,caps[2])
         print("\nOvershoot/undershoot distance: " + str(-dist))
 
-        # Spin the blade
-        # ... TODO ...
-        _pi.write(blade_relay_pin, 1)
+        if rv.wood_is_under: # Final check to make sure the wood is under the blade
+            # Spin the blade
+            # ... TODO ...
+            _pi.write(blade_relay_pin, 1)
 
-        # Lower the blade as it spins
-        # ... TODO ...
+            # Lower the blade as it spins
+            # ... TODO ...
 
-        motor3.setSpeed(480)
-        time.sleep(1)
+            motor3.setSpeed(480)
+            time.sleep(1)
 
-        # Raise blade again
-        # ... TODO ...
-        motor3.setSpeed(-480)
-        time.sleep(1)
-        motor3.setSpeed(0)
+            # Raise blade again
+            # ... TODO ...
+            motor3.setSpeed(-480)
+            time.sleep(1)
+            motor3.setSpeed(0)
 
-        # Stop the blade
-        # ... TODO ...
+            # Stop the blade
+            # ... TODO ...
 
-        _pi.write(blade_relay_pin, 0)
-
+            _pi.write(blade_relay_pin, 0)
+        else:
+            print("\nWood is not propperly in place to make the cut")
         # Eject the wood
         # ... TODO ...
 
