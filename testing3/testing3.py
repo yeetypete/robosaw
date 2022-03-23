@@ -107,7 +107,7 @@ def run():
         dist = rv.find_distance(model,caps[2])
         print("\nOvershoot/undershoot distance: " + str(-dist))
 
-        if rv.wood_is_under: # Final check to make sure the wood is under the blade
+        if rv.wood_is_under: # Final check to make sure something is actually under the blade
             # Spin the blade
             # ... TODO ...
             _pi.write(blade_relay_pin, 1)
