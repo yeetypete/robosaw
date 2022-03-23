@@ -95,10 +95,13 @@ def run():
         while True:
             dist = rv.find_distance(model,caps[2])
             if (dist is not None):
-                if (dist < 0):
+                if (dist < 50):
                     print("Distance: " + str(dist))
-                    robosaw.motors.setSpeeds(0,0)
-                    break
+                    robosaw.motors.setSpeeds(100,100)
+                    if (dist < 0):
+                        print("Distance: " + str(dist))
+                        robosaw.motors.setSpeeds(0,0)
+                        break
                 robosaw.feed(abs(dist), int(args.speed - 50))
                 print("Distance: " + str(dist))
 
@@ -136,9 +139,9 @@ def run():
         #robosaw.motors.motor2.setSpeed(args.speed)
         #time.sleep(2)
 
-        close_caps() # Always close captures after
+        close_caps(caps) # Always close captures after
     except:
-        close_caps() # Close caps if program fails or gets cancelled
+        close_caps(caps) # Close caps if program fails or gets cancelled
 
 
 

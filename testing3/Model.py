@@ -282,7 +282,7 @@ class Model(object):
     right_center_cam = crop_vals_center_cam[1][1]
 
     # Other
-    line_detection_threshold = 100 #100
+    line_detection_threshold = 110 #100
     center_line_detection_threshold = int(circle_rad/2.5)
     color_thresh_wood_detection = 20
 
