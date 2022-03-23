@@ -4,6 +4,10 @@ import RoboSaw as robosaw
 import time
 import pigpio
 
+### USED GPIO PINS ###
+
+# 4, 5, 6, 7, 12, 13, 16, 17, 20, 22, 23, 24, 25, 26, 27
+
 # linear actuator pin assignments
 _pin_M3DIR = 27
 _pin_M3EN = 17
@@ -11,6 +15,8 @@ _pin_M3PWM = 20
 _pin_M3FLT = 7
 
 blade_relay_pin = 26
+limit_home_pin = 4
+limit_max_pin = 16
 
 def initialize():
     """ Run this first. Returns (model,caps)"""
@@ -59,6 +65,11 @@ def run():
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
         motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT, _pi)
+        _pi.set_mode(limit_home_pin, pigpio.INPUT)
+        _pi.set_mode(limit_max_pin, pigpio.INPUT)
+        _pi.set_mode(blade_relay_pin, pigpio.OUTPUT)
+        _pi.set_pull_up_down(limit_home_pin, pigpio.PUD_UP)
+        _pi.set_pull_up_down(limit_max_pin, pigpio.PUD_UP)
 
         # Check if wood is loaded
         while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
