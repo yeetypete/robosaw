@@ -33,10 +33,14 @@ def close_caps(caps):
 
 def eject(model,caps):
     """ Ejects the wood. Pushes all wood out and raises the blade to default height """
-    print("Ejecting wood")
-    robosaw.motors.setSpeeds(args.speed, args.speed)
-    time.sleep(10)
-    robosaw.motors.setSpeeds(0, 0)
+    print("\nEjecting wood")
+    try:
+        args = robosaw.init_args()
+        robosaw.motors.setSpeeds(args.speed, args.speed)
+        time.sleep(10)
+        robosaw.motors.setSpeeds(0, 0)
+    except:
+        print("\nUnable to eject")
     return
 
 def run():
@@ -67,9 +71,8 @@ def run():
             # Get angles as it moves and save to angle[] array
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
             angle = rv.find_angle(model,caps[1])
-            print("Angle: " + str(angle))
             if angle is not None:
-                #blade_angle = angle
+                print("Angle: " + str(angle))
                 angles.append(angle)
         # find most likely angle based on removing outliers and taking the mean
         blade_angle = model.best_angle(angles)
