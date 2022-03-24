@@ -191,8 +191,5 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     signal.pause()
 
-    #eject(model,caps) # Runs the feeding mechanism as long as 'feed' button is pressed
-    #run() # Once 'Run' button pressed, waits for wood, finds angle, centers under the blade and makes the cut
-
     elapsed = time.perf_counter() - s
     print(f"{__file__} executed in {elapsed:0.2f} seconds.")
