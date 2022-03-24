@@ -9,12 +9,13 @@ import RPi.GPIO as GPIO
 
 ### USED GPIO PINS ###
 
-# _3_, 4, 5, 6, 7, _8_, 12, 13, 16, 17, 20, 22, 23, 24, 25, 26, 27
+# 4, 5, 6, 7, 8, 9, 10, 12, 13, 16, 17, 20, 22, 23, 24, 25, 26, 27
 
 
 # Button pin assignments
-run_btn = 3
+run_btn = 9
 eject_btn = 8
+cut_btn = 10
 
 # linear actuator pin assignments
 _pin_M3DIR = 27
@@ -129,29 +130,31 @@ def run():
         dist = rv.find_distance(model,caps[2])
         print("\nOvershoot/undershoot distance: " + str(-dist))
 
-        if rv.wood_is_under: # Final check to make sure something is actually under the blade
-            # Spin the blade
-            # ... TODO ...
-            _pi.write(blade_relay_pin, 1)
+        print("\nPress 'cut' button to make the cut.")
+        GPIO.wait_for_edge(cut_btn, GPIO.BOTH) # Blocking statement that waits for user to press the cut button before proceeding to make the cut
+        if not GPIO.input(cut_btn):
+            print("\nCut button pressed. GTFO!")
+            if rv.wood_is_under: # Final check to make sure something is actually under the blade
+                # Spin the blade
+                # ... TODO ...
+                _pi.write(blade_relay_pin, 1)
 
-            # Lower the blade as it spins
-            # ... TODO ...
+                # Lower the blade as it spins
+                # ... TODO ...
+                motor3.setSpeed(480)
+                time.sleep(1)
 
-            motor3.setSpeed(480)
-            time.sleep(1)
+                # Raise blade again
+                # ... TODO ...
+                motor3.setSpeed(-480)
+                time.sleep(1)
+                motor3.setSpeed(0)
 
-            # Raise blade again
-            # ... TODO ...
-            motor3.setSpeed(-480)
-            time.sleep(1)
-            motor3.setSpeed(0)
-
-            # Stop the blade
-            # ... TODO ...
-
-            _pi.write(blade_relay_pin, 0)
-        else:
-            print("\nWood is not propperly in place to make the cut")
+                # Stop the blade
+                # ... TODO ...
+                _pi.write(blade_relay_pin, 0)
+            else:
+                print("\nWood is not propperly in place to make the cut")
         # Eject the wood
         # ... TODO ...
 
