@@ -58,6 +58,15 @@ def eject():
         print("\nUnable to eject")
     return
 
+def bump():
+    """ bumps the wood for a short period of time """
+    robosaw.motors.setSpeeds(0,0)
+    robosaw.motors.setSpeeds(200,200)
+    time.sleep(0.1)
+    robosaw.motors.setSpeeds(0,0)
+    time.sleep(0.1)
+
+
 def run():
     """ Intake at idle speed until wood is detected, 
     find the angle of the line, 
@@ -115,15 +124,15 @@ def run():
         while True:
             dist = rv.find_distance(model,caps[2])
             if (dist is not None):
-                if (dist < 50):
-                    print("Distance: " + str(dist))
-                    robosaw.motors.setSpeeds(100,100)
-                    if (dist < 0):
-                        print("Distance: " + str(dist))
-                        robosaw.motors.setSpeeds(0,0)
-                        break
-                robosaw.feed(abs(dist), int(args.speed - 50))
                 print("Distance: " + str(dist))
+                bump() # experimental bump technique
+                #robosaw.motors.setSpeeds(100,100)
+                if (dist <= 0):
+                    print("Distance: " + str(dist))
+                    robosaw.motors.setSpeeds(0,0)
+                    break
+                #robosaw.feed(abs(dist), int(args.speed - 50))
+                #print("Distance: " + str(dist))
 
         # Calculate overshoot from stop point
         time.sleep(1) # wait a second to see if the wood oversoots
@@ -133,7 +142,7 @@ def run():
         print("\nPress 'cut' button to make the cut.")
         GPIO.wait_for_edge(cut_btn, GPIO.BOTH) # Blocking statement that waits for user to press the cut button before proceeding to make the cut
         if not GPIO.input(cut_btn):
-            print("\nCut button pressed. GTFO!")
+            print("\nCut initiated. GTFO!")
             if rv.wood_is_under: # Final check to make sure something is actually under the blade
                 # Spin the blade
                 # ... TODO ...
