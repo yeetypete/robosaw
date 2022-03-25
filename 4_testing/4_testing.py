@@ -190,6 +190,8 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(run_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(eject_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(cut_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     s = time.perf_counter()
 
     # interrupt to run the saw
