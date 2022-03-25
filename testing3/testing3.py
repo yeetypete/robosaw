@@ -53,7 +53,7 @@ def bump():
     """ bumps the wood for a short period of time """
     robosaw.motors.setSpeeds(0,0)
     robosaw.motors.setSpeeds(200,200)
-    time.sleep(0.1)
+    time.sleep(0.01)
     robosaw.motors.setSpeeds(0,0)
     time.sleep(0.1)
 
@@ -115,12 +115,13 @@ def run():
             dist = rv.find_distance(model,caps[2])
             if (dist is not None):
                 print("Distance: " + str(dist))
-                bump() # experimental bump technique
-                #robosaw.motors.setSpeeds(100,100)
-                if (dist <= 0):
-                    print("Distance: " + str(dist))
-                    robosaw.motors.setSpeeds(0,0)
-                    break
+                if (dist < 100):
+                    bump() # experimental bump technique
+                    #robosaw.motors.setSpeeds(100,100)
+                    if (dist <= 0):
+                        print("Distance: " + str(dist))
+                        robosaw.motors.setSpeeds(0,0)
+                        break
                 #robosaw.feed(abs(dist), int(args.speed - 50))
                 #print("Distance: " + str(dist))
 
