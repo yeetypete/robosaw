@@ -95,7 +95,7 @@ def run():
                 angles.append(angle)
         # find most likely angle based on removing outliers and taking the mean
         blade_angle = model.best_angle(angles)
-        caps[1].release() # Close the angle camera
+        #caps[1].release() # Close the angle camera
 
         # Stop or slow the wood
         # ... TODO ...
