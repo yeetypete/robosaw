@@ -139,8 +139,18 @@ def run():
         dist = rv.find_distance(model,caps[2])
         print("\nOvershoot/undershoot distance: " + str(-dist))
 
-        print("\nPress 'cut' button to make the cut.")
-        GPIO.wait_for_edge(cut_btn, GPIO.BOTH) # Blocking statement that waits for user to press the cut button before proceeding to make the cut
+
+        ########        User input required to make the cut        ########
+        print("\nPress 'r' key to make the cut.")
+        while True:
+            key = Model.cv2.waitKey(1)
+            if (key == ord('r') or key == ord('R')):
+                break
+
+        #print("\nPress 'cut' button to make the cut.") # Alternatively use buttons or both for redundancy
+        #GPIO.wait_for_edge(cut_btn, GPIO.BOTH) # Blocking statement that waits for user to press the cut button before proceeding to make the cut
+
+
         if not GPIO.input(cut_btn):
             print("\nCut initiated. GTFO!")
             if rv.wood_is_under: # Final check to make sure something is actually under the blade
