@@ -190,6 +190,14 @@ def wood_is_under(model,cap):
     lower_green = np.array([model.h_lower_thresh2,model.s_lower_thresh2,model.v_lower_thresh2])
     upper_green = np.array([model.h_upper_thresh2,model.s_upper_thresh2,model.v_upper_thresh2])
     mask1 = cv2.inRange(hsv1, lower_green, upper_green) #threshold the image to only show green pixels
+
+    hsv2 = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
+    mask2 = cv2.inRange(hsv2, lower_green, upper_green) #threshold the image to only show green pixels
+    frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
+    edges = cv2.Canny(frame,15,30,apertureSize = 3)
+    disp = cv2.bitwise_or(edges,mask2)
+    cv2.imshow('RoboVision', disp)
+
     number_of_white_pix1 = np.sum(mask1 == 255)
     if number_of_white_pix1 < model.color_thresh_wood_detection:
         print("Wood is under blade")

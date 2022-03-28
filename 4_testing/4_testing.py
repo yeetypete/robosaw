@@ -122,7 +122,7 @@ def run():
 
         # Stop or slow the wood
         # ... TODO ...
-        robosaw.motors.setSpeeds(args.speed - 50, args.speed - 50)
+        robosaw.motors.setSpeeds(args.speed*0.75, args.speed*0.75) # slow to 3/4 speed
 
         # Rotate the blade to correct angle
         # ... TODO ...
@@ -215,7 +215,6 @@ if __name__ == "__main__":
     GPIO.setup(run_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(eject_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(cut_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    s = time.perf_counter()
 
 
     run()
@@ -231,6 +230,3 @@ if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, signal_handler)
     signal.pause()
-
-    elapsed = time.perf_counter() - s
-    print(f"{__file__} executed in {elapsed:0.2f} seconds.")
