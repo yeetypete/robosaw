@@ -137,13 +137,13 @@ def find_angle(model,cap):
     if not ret:
             print("No frame captured: ret is False")
             return None
-    disp = frame
-    cv2.imshow("RoboVision", disp)
-    print("Looking for angle")
 
     lines = model.img_proc_angle_detect(frame)
     line = model.get_best_line(lines)
     angle = model.get_saw_angle(line)
+    disp = frame
+    cv2.imshow("RoboVision", disp)
+    print("Looking for angle")
     #cv2.destroyAllWindows()
     return angle
 
