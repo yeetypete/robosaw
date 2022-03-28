@@ -41,30 +41,42 @@ def initialize():
     
 def close_caps(caps):
     """ Close the captures before terminating """
-    for cap in caps:
-        print("\nReleasing capture: " + str(cap))
-        cap.release()
-    robosaw.motors.forceStop()
+    try:
+        for cap in caps:
+            print("\nReleasing capture: " + str(cap))
+            cap.release()
+    except:
+        robosaw.motors.forceStop()
+    finally:
+        robosaw.motors.forceStop()
 
 def eject():
     """ Ejects the wood. Pushes all wood out and raises the blade to default height """
-    print("\nEjecting wood")
     try:
         args = robosaw.init_args()
         robosaw.motors.setSpeeds(args.speed, args.speed)
         time.sleep(10)
         robosaw.motors.setSpeeds(0, 0)
+        print("\nEjecting wood")
     except:
-        print("\nUnable to eject")
-    return
+        robosaw.motors.forceStop()
+        print("\n {__file__} Unable to eject")
+    finally:
+        return
 
 def bump():
     """ bumps the wood for a short period of time """
-    robosaw.motors.setSpeeds(0,0)
-    robosaw.motors.setSpeeds(200,200)
-    time.sleep(0.1)
-    robosaw.motors.setSpeeds(0,0)
-    time.sleep(0.1)
+    try:
+        robosaw.motors.setSpeeds(0,0)
+        robosaw.motors.setSpeeds(200,200)
+        time.sleep(0.1)
+        robosaw.motors.setSpeeds(0,0)
+        time.sleep(0.1)
+    except:
+        print("{__file__} Cannot bump the wood")
+        robosaw.motors.setSpeeds(0,0)
+        pass
+    
 
 
 def run():
@@ -79,6 +91,7 @@ def run():
     except:
         print("\nUnable to initialize model and caps")
 
+    
     try:
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
@@ -203,6 +216,10 @@ if __name__ == "__main__":
     GPIO.setup(eject_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(cut_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     s = time.perf_counter()
+
+
+    run()
+
 
     # interrupt to run the saw
     GPIO.add_event_detect(run_btn, GPIO.FALLING, 
