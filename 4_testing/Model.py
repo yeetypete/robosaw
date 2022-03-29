@@ -27,6 +27,7 @@ class Model(object):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         frame = cv2.GaussianBlur(frame, (3, 3), 0)
         frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
+        #frame = cv2.Canny(frame,20,60,apertureSize = 3) # Only detect sharpie lines
         frame = cv2.Canny(frame,15,30,apertureSize = 3)
         return frame
 
@@ -159,13 +160,14 @@ class Model(object):
 
         # format text to show angle
         font                   = cv2.FONT_HERSHEY_SIMPLEX
-        bottomLeftCornerOfText = (10,200)
+        bottomLeftCornerOfText = (10,50)
         fontScale              = 1
         fontColor              = (255,255,255)
         thickness              = 3
         lineType               = 2
-
-        cv2.putText(frame,'Distance: '+str(distance), 
+        
+        res = "{:.2f}".format(distance)
+        cv2.putText(frame,'Distance: '+str(res), 
         bottomLeftCornerOfText, 
         font, 
         fontScale,

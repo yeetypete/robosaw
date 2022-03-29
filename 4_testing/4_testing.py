@@ -2,6 +2,7 @@ from Model import Model
 import robo_vision2 as rv
 import RoboSaw as robosaw
 import time
+import cv2
 import sys
 import signal
 import pigpio
@@ -60,7 +61,7 @@ def eject():
         print("\nEjecting wood")
     except:
         robosaw.motors.forceStop()
-        print("\n {__file__} Unable to eject")
+        print("\nUnable to eject")
     finally:
         return
 
@@ -68,12 +69,12 @@ def bump():
     """ bumps the wood for a short period of time """
     try:
         robosaw.motors.setSpeeds(0,0)
-        robosaw.motors.setSpeeds(200,200)
-        time.sleep(0.1)
+        robosaw.motors.setSpeeds(300,300)
+        time.sleep(0.01)
         robosaw.motors.setSpeeds(0,0)
-        time.sleep(0.1)
+        time.sleep(0.08)
     except:
-        print("{__file__} Cannot bump the wood")
+        print("Cannot bump the wood")
         robosaw.motors.setSpeeds(0,0)
         pass
     
@@ -104,6 +105,7 @@ def run():
 
         # Check if wood is loaded
         while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
+            rv.show(model)
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
         #caps[0].release()
 
@@ -113,6 +115,7 @@ def run():
             # Get angles as it moves and save to angle[] array
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
             angle = rv.find_angle(model,caps[1])
+            rv.show(model)
             if angle is not None:
                 print("Angle: " + str(angle))
                 angles.append(angle)
@@ -131,11 +134,13 @@ def run():
         # Move the line close to the center and slow down
         # ... TODO ...
         while not rv.wood_is_under(model,caps[0]):
+            rv.show(model)
             continue # Kepps moving the wood until it is under the center camera
 
         # Stop the wood under the blade
         while True:
             dist = rv.find_distance(model,caps[2])
+            rv.show(model)
             if (dist is not None):
                 print("Distance: " + str(dist))
                 bump() # experimental bump technique
@@ -154,39 +159,42 @@ def run():
 
 
         ########        User input required to make the cut        ########
-        print("\nPress 'r' key to make the cut.")
-        while True:
-            key = Model.cv2.waitKey(1)
-            if (key == ord('r') or key == ord('R')):
-                break
+        #print("\nPress 'r , Enter' key to make the cut.")
+        key = input("\nPress 'r , Enter' key to make the cut.")
+        if key == 'r':
+            print("Chopping!")
+        else:
+            print("Wrong key pressed, run again to make a cut.")
+            close_caps(caps) # Close caps if program fails or gets cancelled
+            return
 
         #print("\nPress 'cut' button to make the cut.") # Alternatively use buttons or both for redundancy
         #GPIO.wait_for_edge(cut_btn, GPIO.BOTH) # Blocking statement that waits for user to press the cut button before proceeding to make the cut
 
 
-        if not GPIO.input(cut_btn):
-            print("\nCut initiated. GTFO!")
-            if rv.wood_is_under: # Final check to make sure something is actually under the blade
-                # Spin the blade
-                # ... TODO ...
-                _pi.write(blade_relay_pin, 1)
+        #if not GPIO.input(cut_btn): # indent until Eject if uncommented later
+        print("\nCut initiated. GTFO!")
+        if rv.wood_is_under: # Final check to make sure something is actually under the blade
+            # Spin the blade
+            # ... TODO ...
+            #_pi.write(blade_relay_pin, 1)
 
-                # Lower the blade as it spins
-                # ... TODO ...
-                motor3.setSpeed(480)
-                time.sleep(1)
+            # Lower the blade as it spins
+            # ... TODO ...
+            #motor3.setSpeed(480)
+            time.sleep(1)
 
-                # Raise blade again
-                # ... TODO ...
-                motor3.setSpeed(-480)
-                time.sleep(1)
-                motor3.setSpeed(0)
+            # Raise blade again
+            # ... TODO ...
+            #motor3.setSpeed(-480)
+            time.sleep(1)
+            motor3.setSpeed(0)
 
-                # Stop the blade
-                # ... TODO ...
-                _pi.write(blade_relay_pin, 0)
-            else:
-                print("\nWood is not propperly in place to make the cut")
+            # Stop the blade
+            # ... TODO ...
+            #_pi.write(blade_relay_pin, 0)
+        else:
+            print("\nWood is not propperly in place to make the cut")
         # Eject the wood
         # ... TODO ...
 
@@ -194,7 +202,8 @@ def run():
         #time.sleep(2)
 
         close_caps(caps) # Always close captures after
-    except:
+    except Exception as e: 
+        print(e)
         close_caps(caps) # Close caps if program fails or gets cancelled
 
 def run_btn_callback(channel):

@@ -141,16 +141,15 @@ def find_angle(model,cap):
     lines = model.img_proc_angle_detect(frame)
     line = model.get_best_line(lines)
     angle = model.get_saw_angle(line)
-    disp = frame
-    cv2.imshow("RoboVision", disp)
-    print("Looking for angle")
-    #cv2.destroyAllWindows()
+    frame = model.add_line_angle(frame,line)
+    model.show = frame
     return angle
 
 def find_distance(model,cap):
     """ If edge is detected return its distance from the blade
     Else return None """
     ret , frame = cap.read()
+    frame_full = frame
     frame = model.crop_circle(frame)
     if not ret:
             print("No frame captured: ret is False")
@@ -158,7 +157,8 @@ def find_distance(model,cap):
     lines = model.img_proc_line_detect_center(frame)
     line = model.get_best_center_line(lines)
     distance = model.find_dist_from_center(line)
-    cv2.destroyAllWindows()
+    disp = model.add_line_distance(frame_full,line)
+    model.show = disp
     return distance
 
 def img_proc_display(model,cap):
@@ -175,7 +175,7 @@ def img_proc_display(model,cap):
 
         cv2.imshow('RoboVision: press "q" to quit', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            #cap.release()
+            cap.release()
             cv2.destroyAllWindows()
             break
 
@@ -191,12 +191,13 @@ def wood_is_under(model,cap):
     upper_green = np.array([model.h_upper_thresh2,model.s_upper_thresh2,model.v_upper_thresh2])
     mask1 = cv2.inRange(hsv1, lower_green, upper_green) #threshold the image to only show green pixels
 
-    hsv2 = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
-    mask2 = cv2.inRange(hsv2, lower_green, upper_green) #threshold the image to only show green pixels
-    frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
-    edges = cv2.Canny(frame,15,30,apertureSize = 3)
-    disp = cv2.bitwise_or(edges,mask2)
-    cv2.imshow('RoboVision', disp)
+    #hsv2 = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
+    #mask2 = cv2.inRange(hsv2, lower_green, upper_green) #threshold the image to only show green pixels
+    #frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
+    #edges = cv2.Canny(frame,15,30,apertureSize = 3)
+    #disp = cv2.bitwise_or(edges,mask2)
+    #cv2.imshow('RoboVision', disp)
+    model.show = frame
 
     number_of_white_pix1 = np.sum(mask1 == 255)
     if number_of_white_pix1 < model.color_thresh_wood_detection:
@@ -208,7 +209,8 @@ def wood_is_under(model,cap):
 
 def wood_is_loaded(model,cap):
     ret , frame = cap.read()
-    
+    #cv2.namedWindow("RoboVision", cv2.WINDOW_AUTOSIZE)
+    #cv2.imshow('RoboVision', frame)
     if not ret:
             print("No frame captured: ret is False")
             return False
@@ -219,11 +221,11 @@ def wood_is_loaded(model,cap):
     upper_green = np.array([model.h_upper_thresh1,model.s_upper_thresh1,model.v_upper_thresh1])
     mask1 = cv2.inRange(hsv1, lower_green, upper_green) #threshold the image to only show green pixels
     mask2 = cv2.inRange(hsv2, lower_green, upper_green) #threshold the image to only show green pixels
-    frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
-    edges = cv2.Canny(frame,15,30,apertureSize = 3)
-    disp = cv2.bitwise_or(edges,mask2)
-
-    cv2.imshow('RoboVision', disp)
+    #frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
+    #edges = cv2.Canny(frame,30,130,apertureSize = 3)
+    mask3 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
+    disp = cv2.bitwise_and(frame,mask3)
+    model.show = disp
     
     number_of_white_pix1 = np.sum(mask1 == 255)
     if number_of_white_pix1 < model.color_thresh_wood_detection:
@@ -232,3 +234,9 @@ def wood_is_loaded(model,cap):
     else:
         print("Waiting for you to give me the wood...")
         return False
+
+def show(model):
+    cv2.imshow('RoboVision', model.show)
+    key = cv2.waitKey(1)
+    if key == ord('q'):
+            return False
