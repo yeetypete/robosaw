@@ -164,7 +164,7 @@ def run():
         # Move the line close to the center and slow down
         # ... TODO ...
         while not rv.wood_is_under(model,caps[0]):
-            rv.show(model)
+            #rv.show(model)
             continue # Kepps moving the wood until it is under the center camera
 
 

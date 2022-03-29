@@ -151,13 +151,27 @@ def find_distance(model,cap):
     ret , frame = cap.read()
     frame_full = frame
     frame = model.crop_circle(frame)
+
+    
+
     if not ret:
             print("No frame captured: ret is False")
             return None
     lines = model.img_proc_line_detect_center(frame)
     line = model.get_best_center_line(lines)
     distance = model.find_dist_from_center(line)
+
+    # add detected line
     disp = model.add_line_distance(frame_full,line)
+
+    # make crosshairs
+    pt1 = (model.circle_x,model.circle_y-model.circle_rad)
+    pt2 = (model.circle_x,model.circle_y+model.circle_rad)
+    cv2.line(frame_full,pt1,pt2,(0,0,255),2, cv2.LINE_AA)
+    pt1 = (model.circle_x-model.circle_rad,model.circle_y)
+    pt2 = (model.circle_x+model.circle_rad,model.circle_y)
+    cv2.line(frame_full,pt1,pt2,(0,0,255),2, cv2.LINE_AA)
+
     model.show = disp
     return distance
 

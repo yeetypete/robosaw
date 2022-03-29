@@ -128,11 +128,12 @@ class Model(object):
         font                   = cv2.FONT_HERSHEY_SIMPLEX
         bottomLeftCornerOfText = (10,200)
         fontScale              = 1
-        fontColor              = (255,255,255)
+        fontColor              = (0,0,245)
         thickness              = 3
         lineType               = 2
 
-        cv2.putText(frame,'Angle: '+str(angle), 
+        res = "{:.2f}".format(angle)
+        cv2.putText(frame,'Angle: '+str(res), 
         bottomLeftCornerOfText, 
         font, 
         fontScale,
@@ -162,11 +163,11 @@ class Model(object):
         font                   = cv2.FONT_HERSHEY_SIMPLEX
         bottomLeftCornerOfText = (10,50)
         fontScale              = 1
-        fontColor              = (255,255,255)
+        fontColor              = (0,0,245)
         thickness              = 3
         lineType               = 2
         
-        res = "{:.2f}".format(distance)
+        res = "{:.3f}".format(distance)
         cv2.putText(frame,'Distance: '+str(res), 
         bottomLeftCornerOfText, 
         font, 
