@@ -10,8 +10,11 @@ def open_cameras(model):
     s = time.perf_counter()
 
     color_cap = cv2.VideoCapture(model.color_cam_id)
+    time.sleep(1)
     angle_cap = cv2.VideoCapture(model.angle_cam_id)
+    time.sleep(1)
     center_cap = cv2.VideoCapture(model.center_cam_id)
+    time.sleep(1)
     if not color_cap.isOpened():
         print("Cannot open color camera")
         exit()
@@ -134,9 +137,11 @@ def find_angle(model,cap):
     Else returns None """
     ret , frame = cap.read()
     
-    if not ret:
-            print("No frame captured: ret is False")
-            return None
+    while ret == False:
+       print("Can't receive frame. Retrying ...")
+       cap.release()       
+       cap = cv2.VideoCapture(model.angle_cam_id)
+       ret, frame = cap.read()
 
     lines = model.img_proc_angle_detect(frame)
     line = model.get_best_line(lines)
@@ -152,11 +157,12 @@ def find_distance(model,cap):
     frame_full = frame
     frame = model.crop_circle(frame)
 
-    
+    while ret == False:
+       print("Can't receive frame. Retrying ...")
+       cap.release()       
+       cap = cv2.VideoCapture(model.center_cam_id)
+       ret, frame = cap.read()
 
-    if not ret:
-            print("No frame captured: ret is False")
-            return None
     lines = model.img_proc_line_detect_center(frame)
     line = model.get_best_center_line(lines)
     distance = model.find_dist_from_center(line)
@@ -196,9 +202,11 @@ def img_proc_display(model,cap):
 
 def wood_is_under(model,cap):
     ret , frame = cap.read()
-    if not ret:
-            print("No frame captured: ret is False")
-            return False
+    while ret == False:
+       print("Can't receive frame. Retrying ...")
+       cap.release()       
+       cap = cv2.VideoCapture(model.color_cam_id)
+       ret, frame = cap.read()
     frame1 = frame[model.top_color_cam2:model.bottom_color_cam2, model.left_color_cam2:model.right_color_cam2]
     hsv1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2HSV) #color space transformation to hsv
     lower_green = np.array([model.h_lower_thresh2,model.s_lower_thresh2,model.v_lower_thresh2])
@@ -225,9 +233,11 @@ def wood_is_loaded(model,cap):
     ret , frame = cap.read()
     #cv2.namedWindow("RoboVision", cv2.WINDOW_AUTOSIZE)
     #cv2.imshow('RoboVision', frame)
-    if not ret:
-            print("No frame captured: ret is False")
-            return False
+    while ret == False:
+       print("Can't receive frame. Retrying ...")
+       cap.release()       
+       cap = cv2.VideoCapture(model.color_cam_id)
+       ret, frame = cap.read()
     frame1 = frame[model.top_color_cam1:model.bottom_color_cam1, model.left_color_cam1:model.right_color_cam1]
     hsv1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2HSV) #color space transformation to hsv
     hsv2 = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
