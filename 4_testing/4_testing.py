@@ -46,7 +46,8 @@ def close_caps(caps):
         for cap in caps:
             print("\nReleasing capture: " + str(cap))
             cap.release()
-    except:
+    except Exception as e: 
+        print(e)
         robosaw.motors.forceStop()
     finally:
         robosaw.motors.forceStop()
@@ -59,7 +60,8 @@ def eject():
         time.sleep(10)
         robosaw.motors.setSpeeds(0, 0)
         print("\nEjecting wood")
-    except:
+    except Exception as e: 
+        print(e)
         robosaw.motors.forceStop()
         print("\nUnable to eject")
     finally:
@@ -73,11 +75,37 @@ def bump():
         time.sleep(0.01)
         robosaw.motors.setSpeeds(0,0)
         time.sleep(0.08)
-    except:
+    except Exception as e: 
+        print(e)
         print("Cannot bump the wood")
         robosaw.motors.setSpeeds(0,0)
         pass
-    
+
+def bump_prop(dist):
+    """ bumps the wood for a short period of time """
+    try:
+        robosaw.motors.setSpeeds(0,0)
+        robosaw.motors.setSpeeds(300,300)
+        time = dist*0.001
+        time.sleep(time)
+        robosaw.motors.setSpeeds(0,0)
+        time.sleep(0.08)
+    except Exception as e: 
+        print(e)
+        print("Cannot bump the wood")
+        robosaw.motors.setSpeeds(0,0)
+        pass
+
+def stop():
+    """ bumps the wood for a short period of time """
+    try:
+        robosaw.motors.setSpeeds(0,0)
+        time.sleep(0.1)
+    except Exception as e: 
+        print(e)
+        print("Cannot stop the wood")
+        robosaw.motors.setSpeeds(0,0)
+        pass
 
 
 def run():
@@ -89,7 +117,8 @@ def run():
     make cut, raise blade """
     try:
         model,caps = initialize()
-    except:
+    except Exception as e: 
+        print(e)
         print("\nUnable to initialize model and caps")
 
     
@@ -125,12 +154,12 @@ def run():
 
         # Stop or slow the wood
         # ... TODO ...
-        slowdown = 0.2 # value between 0 and 1: slowdown factor
-        robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # slow to 3/4 speed
+        
 
         # Rotate the blade to correct angle
         # ... TODO ...
         print("\nRotate blade to " + str(blade_angle) + " degrees.\n")
+
 
         # Move the line close to the center and slow down
         # ... TODO ...
@@ -138,13 +167,26 @@ def run():
             rv.show(model)
             continue # Kepps moving the wood until it is under the center camera
 
-        # Stop the wood under the blade
+
+        # Slowdown the wood now that it is looking for a center line
+        slowdown = 0.2 # value between 0 and 1: slowdown factor
+        robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # Set new speed
+
+
+        # Stop the line under the blade
+        while True:
+        	rv.show(model)
+        	if rv.find_distance(model,caps[2]) is not None:
+        		stop()
+        		break
+
         while True:
             dist = rv.find_distance(model,caps[2])
             rv.show(model)
             if (dist is not None):
                 print("Distance: " + str(dist))
-                bump() # experimental bump technique
+                #bump()
+                bump_prop(dist)
                 #robosaw.motors.setSpeeds(100,100)
                 if (dist <= 0):
                     print("Distance: " + str(dist))
@@ -159,8 +201,8 @@ def run():
         print("\nOvershoot/undershoot distance: " + str(-dist))
 
 
+
         ########        User input required to make the cut        ########
-        #print("\nPress 'r , Enter' key to make the cut.")
         key = input("\nPress 'r , Enter' key to make the cut.")
         if key == 'r':
             print("Chopping!")
