@@ -125,7 +125,8 @@ def run():
 
         # Stop or slow the wood
         # ... TODO ...
-        robosaw.motors.setSpeeds(args.speed*0.75, args.speed*0.75) # slow to 3/4 speed
+        slowdown = 0.2 # between 0 and 1 slowdown factor
+        robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # slow to 3/4 speed
 
         # Rotate the blade to correct angle
         # ... TODO ...
