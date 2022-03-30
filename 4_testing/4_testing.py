@@ -79,14 +79,15 @@ def bump():
         print(e)
         print("Cannot bump the wood")
         robosaw.motors.setSpeeds(0,0)
-        pass
+        return
 
 def bump_prop(dist):
     """ bumps the wood for a short period of time """
     try:
-        robosaw.motors.setSpeeds(0,0)
-        robosaw.motors.setSpeeds(300,300)
         time = dist*0.001
+        robosaw.motors.setSpeeds(0,0)
+        time.sleep(time)
+        robosaw.motors.setSpeeds(300,300)
         time.sleep(time)
         robosaw.motors.setSpeeds(0,0)
         time.sleep(0.08)
@@ -94,7 +95,7 @@ def bump_prop(dist):
         print(e)
         print("Cannot bump the wood")
         robosaw.motors.setSpeeds(0,0)
-        pass
+        return
 
 def stop():
     """ bumps the wood for a short period of time """
@@ -163,7 +164,6 @@ def run():
         #caps = rv.open_cameras(model) # Open caps again
         #caps[1].release()
         # Move the line close to the center and slow down
-        # ... TODO ...
         caps[0] = cv2.VideoCapture(model.color_cam_id)
         while not caps[0].isOpened():
             print("Cannot open color camera")
@@ -201,13 +201,16 @@ def run():
                 #print("Distance: " + str(dist))
 
         # Calculate overshoot from stop point
-        time.sleep(1) # wait a second to see if the wood oversoots
-        dist = rv.find_distance(model,caps[2])
-        print("\nOvershoot/undershoot distance: " + str(-dist))
+        # ... TODO ...
 
 
+        # Close the center cap
+        caps[2].release()
 
+
+        ###################################################################
         ########        User input required to make the cut        ########
+        ###################################################################
         key = input("\nPress 'r , Enter' key to make the cut.")
         if key == 'r':
             print("Chopping!")
@@ -222,9 +225,14 @@ def run():
 
         #if not GPIO.input(cut_btn): # indent until Eject if uncommented later
         print("\nCut initiated. GTFO!")
+
+        caps[0] = cv2.VideoCapture(model.color_cam_id)######################
+        while not caps[0].isOpened():###
+            print("Cannot open color camera")####
+            caps[0] = cv2.VideoCapture(model.color_cam_id)######
+        
         if rv.wood_is_under: # Final check to make sure something is actually under the blade
             # Spin the blade
-            # ... TODO ...
             #_pi.write(blade_relay_pin, 1) # spin up the blade
 
             # Lower the blade as it spins
@@ -240,16 +248,13 @@ def run():
             motor3.setSpeed(0)
 
             # Stop the blade
-            # ... TODO ...
             _pi.write(blade_relay_pin, 0)
         else:
             print("\nWood is not propperly in place to make the cut")
-        # Eject the wood
-        # ... TODO ...
+        # indent until Eject if uncommented later
 
-        #robosaw.motors.motor2.setSpeed(args.speed)
-        #time.sleep(2)
 
+        caps[0].release() #########################
         close_caps(caps) # Always close captures after
     except Exception as e: 
         print(e)
