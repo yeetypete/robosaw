@@ -1,6 +1,6 @@
 import cv2
 
-cv2.namedWindow("preview")
+
 vc = cv2.VideoCapture(0)
 
 if vc.isOpened(): # try to get the first frame
@@ -9,6 +9,8 @@ else:
     rval = False
 
 while rval:
+    cv2.namedWindow("preview",cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("preview", 600,400)
     cv2.imshow("preview", frame)
     rval, frame = vc.read()
     key = cv2.waitKey(20)

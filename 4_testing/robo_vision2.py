@@ -207,6 +207,7 @@ def wood_is_under(model,cap):
        cap.release()       
        cap = cv2.VideoCapture(model.color_cam_id)
        ret, frame = cap.read()
+    #edges = cv2.Canny(frame,15,30,apertureSize = 3)
     frame1 = frame[model.top_color_cam2:model.bottom_color_cam2, model.left_color_cam2:model.right_color_cam2]
     hsv1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2HSV) #color space transformation to hsv
     lower_green = np.array([model.h_lower_thresh2,model.s_lower_thresh2,model.v_lower_thresh2])
@@ -216,8 +217,8 @@ def wood_is_under(model,cap):
     #hsv2 = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #color space transformation to hsv
     #mask2 = cv2.inRange(hsv2, lower_green, upper_green) #threshold the image to only show green pixels
     #frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
-    #edges = cv2.Canny(frame,15,30,apertureSize = 3)
-    #disp = cv2.bitwise_or(edges,mask2)
+    
+    #disp = cv2.bitwise_or(edges,frame)
     #cv2.imshow('RoboVision', disp)
     model.show = frame
 
@@ -245,10 +246,12 @@ def wood_is_loaded(model,cap):
     upper_green = np.array([model.h_upper_thresh1,model.s_upper_thresh1,model.v_upper_thresh1])
     mask1 = cv2.inRange(hsv1, lower_green, upper_green) #threshold the image to only show green pixels
     mask2 = cv2.inRange(hsv2, lower_green, upper_green) #threshold the image to only show green pixels
-    #frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
-    #edges = cv2.Canny(frame,30,130,apertureSize = 3)
+    frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
+    edges = cv2.Canny(frame,30,130,apertureSize = 3)
+    edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
     mask3 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
-    disp = cv2.bitwise_and(frame,mask3)
+    green = cv2.bitwise_and(frame,mask3)
+    disp = cv2.bitwise_or(green,edges)
     model.show = disp
     
     number_of_white_pix1 = np.sum(mask1 == 255)
@@ -260,7 +263,10 @@ def wood_is_loaded(model,cap):
         return False
 
 def show(model):
-    cv2.imshow('RoboVision', model.show)
+    cv2.namedWindow("preview",cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("preview", 2000,1800)
+    cv2.imshow("preview", model.show)
+    
     key = cv2.waitKey(1)
     if key == ord('q'):
             return False
