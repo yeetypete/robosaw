@@ -9,7 +9,7 @@ class Model(object):
     def __init__(self, MAX_ANGLE):
         self.max_angle = MAX_ANGLE
         self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
-        #self.show = None#cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
+        self.logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
         print("RoboSaw initializing Model")
 
     def best_angle(self, arr):

@@ -10,11 +10,8 @@ def open_cameras(model):
     s = time.perf_counter()
 
     color_cap = cv2.VideoCapture(model.color_cam_id)
-    time.sleep(1)
     angle_cap = cv2.VideoCapture(model.angle_cam_id)
-    time.sleep(1)
     center_cap = cv2.VideoCapture(model.center_cam_id)
-    time.sleep(1)
     if not color_cap.isOpened():
         print("Cannot open color camera")
         exit()
@@ -252,7 +249,14 @@ def wood_is_loaded(model,cap):
     mask3 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
     green = cv2.bitwise_and(frame,mask3)
     disp = cv2.bitwise_or(green,edges)
-    model.show = disp
+    width = int(disp.shape[1])
+    height = int(disp.shape[0])
+    dim = (width, height)
+  
+    # resize image
+    resized = cv2.resize(model.logo, dim, interpolation = cv2.INTER_AREA)
+    added_image = cv2.addWeighted(resized,0.5,disp,0.3,0)
+    model.show = added_image
     
     number_of_white_pix1 = np.sum(mask1 == 255)
     if number_of_white_pix1 < model.color_thresh_wood_detection:
