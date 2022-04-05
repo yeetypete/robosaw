@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import sys
 class Model(object):
 
     """ RoboSaw environment model """
@@ -8,6 +9,7 @@ class Model(object):
     def __init__(self, MAX_ANGLE):
         self.max_angle = MAX_ANGLE
         self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
+        self.logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
         print("RoboSaw initializing Model")
 
     def best_angle(self, arr):
@@ -25,6 +27,7 @@ class Model(object):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         frame = cv2.GaussianBlur(frame, (3, 3), 0)
         frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
+        #frame = cv2.Canny(frame,20,60,apertureSize = 3) # Only detect sharpie lines
         frame = cv2.Canny(frame,15,30,apertureSize = 3)
         return frame
 
@@ -125,11 +128,12 @@ class Model(object):
         font                   = cv2.FONT_HERSHEY_SIMPLEX
         bottomLeftCornerOfText = (10,200)
         fontScale              = 1
-        fontColor              = (255,255,255)
+        fontColor              = (0,0,245)
         thickness              = 3
         lineType               = 2
 
-        cv2.putText(frame,'Angle: '+str(angle), 
+        res = "{:.2f}".format(angle)
+        cv2.putText(frame,'Angle: '+str(res), 
         bottomLeftCornerOfText, 
         font, 
         fontScale,
@@ -157,13 +161,14 @@ class Model(object):
 
         # format text to show angle
         font                   = cv2.FONT_HERSHEY_SIMPLEX
-        bottomLeftCornerOfText = (10,200)
+        bottomLeftCornerOfText = (10,50)
         fontScale              = 1
-        fontColor              = (255,255,255)
+        fontColor              = (0,0,245)
         thickness              = 3
         lineType               = 2
-
-        cv2.putText(frame,'Distance: '+str(distance), 
+        
+        res = "{:.3f}".format(distance)
+        cv2.putText(frame,'Distance: '+str(res), 
         bottomLeftCornerOfText, 
         font, 
         fontScale,
@@ -282,6 +287,7 @@ class Model(object):
     right_center_cam = crop_vals_center_cam[1][1]
 
     # Other
+    show = np.zeros((100,100,3), np.uint8)
     line_detection_threshold = 110 #100
     center_line_detection_threshold = int(circle_rad/2.5)
     color_thresh_wood_detection = 20
