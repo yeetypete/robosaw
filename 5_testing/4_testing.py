@@ -16,10 +16,6 @@ import os
 
 # 4, 5, 6, 7, 8, 9, 10, 12, 13, 16, 17, 20, 22, 23, 24, 25, 26, 27
 
-### AVAILABLE PINS ###
-
-# 0, 1, 3, 14, 19
-
 
 # Button pin assignments
 run_btn = 9
@@ -31,13 +27,6 @@ _pin_M3DIR = 27
 _pin_M3EN = 17
 _pin_M3PWM = 20
 _pin_M3FLT = 7
-
-# rotator pin assignments
-
-_pin_M4DIR = 11
-_pin_M4EN = 15
-_pin_M4PWM = 21
-_pin_M4FLT = 2
 
 blade_relay_pin = 26
 limit_home_pin = 4
