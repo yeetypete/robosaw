@@ -193,7 +193,7 @@ def run():
         slowdown = 0.2 # value between 0 and 1: slowdown factor
         robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # Set new speed
 
-        time.sleep(0.5)
+        time.sleep(1)
 
         if not rv.wood_is_loaded(model,caps[0]): # check for end of wood
             robosaw.motors.setSpeeds(args.speed, args.speed) # Set new speed
