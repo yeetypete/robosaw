@@ -289,7 +289,7 @@ class Model(object):
     # Other
     show = np.zeros((100,100,3), np.uint8)
     line_detection_threshold = 110 #100
-    center_line_detection_threshold = int(circle_rad/2.5)
+    center_line_detection_threshold = int(circle_rad/2)
     color_thresh_wood_detection = 20
 
     pass

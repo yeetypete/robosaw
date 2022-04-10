@@ -87,8 +87,9 @@ def eject():
 def bump():
     """ bumps the wood for a short period of time """
     try:
+        speed = 300
         robosaw.motors.setSpeeds(0,0)
-        robosaw.motors.setSpeeds(300,300)
+        robosaw.motors.setSpeeds(speed,speed)
         time.sleep(0.01)
         robosaw.motors.setSpeeds(0,0)
         time.sleep(0.08)
@@ -118,7 +119,7 @@ def stop():
     """ bumps the wood for a short period of time """
     try:
         robosaw.motors.setSpeeds(0,0)
-        time.sleep(0.1)
+        time.sleep(1)
     except Exception as e: 
         print(e)
         print("Cannot stop the wood")
@@ -193,7 +194,7 @@ def run():
         slowdown = 0.2 # value between 0 and 1: slowdown factor
         robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # Set new speed
 
-        time.sleep(1)
+        time.sleep(0.3)
 
         if not rv.wood_is_loaded(model,caps[0]): # check for end of wood
             robosaw.motors.setSpeeds(args.speed, args.speed) # Set new speed
@@ -211,7 +212,7 @@ def run():
 
         while True:
             dist = rv.find_distance(model,caps[2])
-            rv.show(model)
+            
             if (dist is not None):
                 print("Distance: " + str(dist))
                 if (dist >= 0):
@@ -219,11 +220,7 @@ def run():
                     robosaw.motors.setSpeeds(0,0)
                     break
                 bump()
-                #bump_prop(dist)
-                #robosaw.motors.setSpeeds(100,100)
-                
-                #robosaw.feed(abs(dist), int(args.speed - 50))
-                #print("Distance: " + str(dist))
+        rv.show(model)
 
         # Calculate overshoot from stop point
         time.sleep(0.5) # wait a second to see if the wood oversoots
