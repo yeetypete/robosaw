@@ -4,8 +4,7 @@ import sys
 class Model(object):
 
     """ RoboSaw environment model """
-    cut_flag = False
-    run_flag = False
+
     #### Functions ####
     def __init__(self, MAX_ANGLE):
         self.max_angle = MAX_ANGLE
@@ -29,7 +28,8 @@ class Model(object):
         frame = cv2.GaussianBlur(frame, (3, 3), 0)
         frame = cv2.GaussianBlur(frame,(5,5),cv2.BORDER_DEFAULT)
         #frame = cv2.Canny(frame,20,60,apertureSize = 3) # Only detect sharpie lines
-        frame = cv2.Canny(frame,15,30,apertureSize = 3)
+        #frame = cv2.Canny(frame,15,30,apertureSize = 3)
+        frame = cv2.Canny(frame,self.low_threshold, self.low_threshold*self.ratio ,apertureSize = 3)
         return frame
 
     def img_proc_angle_detect(self,frame):
@@ -224,6 +224,13 @@ class Model(object):
     num_angle_samples = 10
     num_stds = 2
 
+
+    # Get the canny threshold and ratio
+    #detected_edges = cv2.Canny(frame1,low_threshold, low_threshold*ratio ,apertureSize = 3)
+    thresh_ratio = np.load('__calibrate__/canny_tresh_ratio.npy')
+    low_threshold = thresh_ratio[0]
+    ratio = thresh_ratio[1]
+
     # Get the circle crop values
     circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
     circle_x = circle_crop_arr[0][0]
@@ -281,17 +288,18 @@ class Model(object):
     left_angle_cam = crop_vals_angle_cam[1][0]
     right_angle_cam = crop_vals_angle_cam[1][1]
 
+    """
     # Crop center_cam
     crop_vals_center_cam = np.load('__calibrate__/center_cam_top_bottom_left_right.npy')
     top_center_cam = crop_vals_center_cam[0][0]
     bottom_center_cam = crop_vals_center_cam[0][1]
     left_center_cam = crop_vals_center_cam[1][0]
     right_center_cam = crop_vals_center_cam[1][1]
-
+    """
     # Other
     show = np.zeros((100,100,3), np.uint8)
     line_detection_threshold = 110 #100
-    center_line_detection_threshold = int(circle_rad/2.5)
+    center_line_detection_threshold = int(circle_rad/2)
     color_thresh_wood_detection = 20
 
     pass

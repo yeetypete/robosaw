@@ -17,20 +17,42 @@ time.sleep(2)
 #cap.set(3,1280)
 #cap.set(4,720)
 
+
+print("Loading...")
+
 # Create a window named trackbars.
 cv2.namedWindow("Trackbars", cv2.WINDOW_AUTOSIZE)
+
+try:
+    hsv = np.load('__calibrate__/hsv_value1.npy')
+    h_lower_thresh1 = hsv[0][0]
+    h_upper_thresh1 = hsv[1][0]
+    s_lower_thresh1 = hsv[0][1]
+    s_upper_thresh1 = hsv[1][1]
+    v_lower_thresh1 = hsv[0][2]
+    v_upper_thresh1 = hsv[1][2]
+except:
+    print("No values found, using defaults.")
+    h_lower_thresh1 = 0
+    h_upper_thresh1 = 179
+    s_lower_thresh1 = 0
+    s_upper_thresh1 = 255
+    v_lower_thresh1 = 0
+    v_upper_thresh1 = 255
 
 # Now create 6 trackbars that will control the lower and upper range of 
 # H,S and V channels. The Arguments are like this: Name of trackbar, 
 # window name, range,callback function. For Hue the range is 0-179 and
 # for S,V its 0-255.
-cv2.createTrackbar("L - H", "Trackbars", 0, 179, nothing)
-cv2.createTrackbar("L - S", "Trackbars", 0, 255, nothing)
-cv2.createTrackbar("L - V", "Trackbars", 0, 255, nothing)
-cv2.createTrackbar("U - H", "Trackbars", 179, 179, nothing)
-cv2.createTrackbar("U - S", "Trackbars", 255, 255, nothing)
-cv2.createTrackbar("U - V", "Trackbars", 255, 255, nothing)
+cv2.createTrackbar("L - H", "Trackbars", h_lower_thresh1, 179, nothing)
+cv2.createTrackbar("L - S", "Trackbars", s_lower_thresh1, 255, nothing)
+cv2.createTrackbar("L - V", "Trackbars", v_lower_thresh1, 255, nothing)
+cv2.createTrackbar("U - H", "Trackbars", h_upper_thresh1, 179, nothing)
+cv2.createTrackbar("U - S", "Trackbars", s_upper_thresh1, 255, nothing)
+cv2.createTrackbar("U - V", "Trackbars", v_upper_thresh1, 255, nothing)
  
+
+
 while cap.isOpened():
     
     # Start reading the webcam feed frame by frame.

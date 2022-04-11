@@ -16,13 +16,24 @@ cap = cv2.VideoCapture(center_cam_id)
 
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+try:
+    circle_crop_arr = np.load('__calibrate__/center_cam_x_y_radius.npy',allow_pickle=True)
+    circle_x = circle_crop_arr[0][0]
+    circle_y = circle_crop_arr[0][1]
+    circle_rad = circle_crop_arr[1][0]
+except:
+    circle_x = int(width/2)
+    circle_y = int(height/2)
+    circle_rad = int(width/3)
+
 # Create a window named trackbars.
 cv2.namedWindow("Trackbars", cv2.WINDOW_AUTOSIZE)
 
 # trackbars for each edge
-cv2.createTrackbar("left-right", "Trackbars", int(width/2), int(width), nothing)
-cv2.createTrackbar("up-down", "Trackbars", int(height/2), int(height), nothing)
-cv2.createTrackbar("Radius", "Trackbars", int(width/3), int(width/2) - 1, nothing)
+cv2.createTrackbar("left-right", "Trackbars", circle_x, int(width), nothing)
+cv2.createTrackbar("up-down", "Trackbars", circle_y, int(height), nothing)
+cv2.createTrackbar("Radius", "Trackbars", circle_rad, int(width/2) - 1, nothing)
 
 while True:
     
