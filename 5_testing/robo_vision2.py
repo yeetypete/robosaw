@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from Model import Model
 import time
+import os 
 
 def open_cameras(model):
     """ Initializes the three camrea feeds
@@ -224,7 +225,7 @@ def wood_is_under(model,cap):
         print("Wood is under blade")
         return True
     else:
-        print("Feeding...")
+        print("No wood under the blade")
         return False
 
 def wood_is_loaded(model,cap):
@@ -257,7 +258,7 @@ def wood_is_loaded(model,cap):
     # resize image
     resized = cv2.resize(model.logo, dim, interpolation = cv2.INTER_AREA)
     added_image = cv2.addWeighted(resized,0.5,disp,0.3,0)
-    model.show = added_image
+    model.show = frame
     
     number_of_white_pix1 = np.sum(mask1 == 255)
     if number_of_white_pix1 < model.color_thresh_wood_detection:
@@ -267,8 +268,21 @@ def wood_is_loaded(model,cap):
         print("Waiting for you to give me the wood...")
         return False
 
+def show_logo(model):
+    cv2.namedWindow("preview",cv2.WINDOW_NORMAL)
+
+    
+    cv2.resizeWindow("preview", 2000,1800)
+    cv2.imshow("preview", model.logo)
+    
+    key = cv2.waitKey(1)
+    if key == ord('q'):
+            return False
+
 def show(model):
     cv2.namedWindow("preview",cv2.WINDOW_NORMAL)
+
+    
     cv2.resizeWindow("preview", 2000,1800)
     cv2.imshow("preview", model.show)
     
