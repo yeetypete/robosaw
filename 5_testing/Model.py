@@ -1,13 +1,24 @@
 import numpy as np
 import cv2
 import sys
+from simple_pid import PID
 class Model(object):
 
     """ RoboSaw environment model """
 
+    #### PID ####
+    
+    pid = PID(5, 0.01, 0.1, setpoint=0)
+    pid.proportional_on_measurement = True
+    pid.tunings = (1.0, 0.2, 0.4)
+    pid.sample_time = 0.01 # Get this from measuting the line distance capture time
+    pid.output_limits = (0, 300)
+    #speed = pid(distance)
+
     #### Functions ####
     def __init__(self, MAX_ANGLE):
         self.max_angle = MAX_ANGLE
+        self.allowable_overshoot = 10
         self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
         self.logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
         print("RoboSaw initializing Model")

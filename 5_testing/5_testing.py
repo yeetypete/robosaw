@@ -8,6 +8,7 @@ import signal
 import pigpio
 import RPi.GPIO as GPIO
 import os
+import numpy as np
 
 # Change directory
 #os.chdir("~/robosaw/4_testing/")
@@ -117,11 +118,35 @@ def bump_prop(dist):
         robosaw.motors.setSpeeds(0,0)
         return
 
-def stop():
+def smart_bump(stop_dist,dist):
+    """ bumps the wood for a short period of time """
+    try:
+        speed = np.interp(dist,[0,stop_dist],[0,200])
+        robosaw.motors.setSpeeds(speed,speed)
+    except Exception as e: 
+        print(e)
+        print("Cannot bump the wood")
+        robosaw.motors.setSpeeds(0,0)
+        return
+
+def hard_stop(time):
+    """ bumps the wood for a short period of time """
+    try:
+        robosaw.motors.setSpeeds(-200,-200)
+        time.sleep(0.005)
+        robosaw.motors.setSpeeds(0,0)
+        time.sleep(time)
+    except Exception as e: 
+        print(e)
+        print("Cannot stop the wood")
+        robosaw.motors.setSpeeds(0,0)
+        pass
+
+def stop(time):
     """ bumps the wood for a short period of time """
     try:
         robosaw.motors.setSpeeds(0,0)
-        time.sleep(0.1)
+        time.sleep(time)
     except Exception as e: 
         print(e)
         print("Cannot stop the wood")
@@ -280,17 +305,18 @@ def run(model):
             return
         """
         caps[0].release()
-
+        stop_dist = 0
         # Stop the line under the blade
         while True:
-        	rv.show(model)
-        	if rv.find_distance(model,caps[2]) is not None:
-        		stop()
-        		break
+            stop_dist = rv.find_distance(model,caps[2])
+            rv.show(model)
+            if stop_dist is not None:
+        	    stop(0.2)
+                break
 
         while True:
+            s = time.perf_counter() # use to find sample time of each line distance update
             dist = rv.find_distance(model,caps[2])
-            
             if (dist is not None):
                 print("Distance: " + str(dist))
                 if (dist >= -1):
@@ -298,35 +324,29 @@ def run(model):
                     robosaw.motors.setSpeeds(0,0)
                     break
                 bump()
+                smart_bump()
             rv.show(model)
+            elapsed = time.perf_counter() - s
+            print(f"Sample time: {elapsed:0.5f} seconds.")
 
         # Calculate overshoot from stop point
-        time.sleep(0.1) # wait a second to see if the wood oversoots
+        t_end = time.time() + 0.5
+        while time.time() < t_end:
+            if rv.find_distance(model,caps[2]) < model.allowable_overshoot:
+                rv.show(model)
+
+        #time.sleep(0.5) # wait half a second to see if the wood oversoots
         dist = rv.find_distance(model,caps[2])
         rv.show(model)
         print("\nOvershoot/undershoot distance: " + str(-dist))
         
 
-        # Close the center cap
+        # Close the center capture
         caps[2].release()
-
-
-        ###################################################################
-        ########        User input required to make the cut        ########
-        ###################################################################
-        """
-        key = input("\nPress 'r , Enter' key to make the cut.")
-        if key == 'r':
-            print("Chopping!")
-        else:
-            print("Wrong key pressed, run again to make a cut.")
-            close_caps(caps) # Close caps if program fails or gets cancelled
-            return
-        """
-        
+ 
     except Exception as e: 
         print(e)
-        close_caps(caps) # Close caps if program fails or gets cancelled
+        close_caps(caps)
     finally:
         close_caps(caps)
 
