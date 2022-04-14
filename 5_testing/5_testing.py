@@ -9,7 +9,7 @@ import pigpio
 import RPi.GPIO as GPIO
 import os
 import numpy as np
-
+from simple_pid import PID
 # Change directory
 #os.chdir("~/robosaw/4_testing/")
 
@@ -118,10 +118,11 @@ def bump_prop(dist):
         robosaw.motors.setSpeeds(0,0)
         return
 
-def smart_bump(stop_dist,dist):
+def smart_bump(dist):
     """ bumps the wood for a short period of time """
     try:
-        speed = np.interp(dist,[0,stop_dist],[0,200])
+        dist = -dist
+        speed = np.interp(dist,[0,100],[0,100])
         robosaw.motors.setSpeeds(speed,speed)
     except Exception as e: 
         print(e)
@@ -129,24 +130,24 @@ def smart_bump(stop_dist,dist):
         robosaw.motors.setSpeeds(0,0)
         return
 
-def hard_stop(time):
+def hard_stop(secs):
     """ bumps the wood for a short period of time """
     try:
         robosaw.motors.setSpeeds(-200,-200)
         time.sleep(0.005)
         robosaw.motors.setSpeeds(0,0)
-        time.sleep(time)
+        time.sleep(secs)
     except Exception as e: 
         print(e)
         print("Cannot stop the wood")
         robosaw.motors.setSpeeds(0,0)
         pass
 
-def stop(time):
+def stop(secs):
     """ bumps the wood for a short period of time """
     try:
         robosaw.motors.setSpeeds(0,0)
-        time.sleep(time)
+        time.sleep(secs)
     except Exception as e: 
         print(e)
         print("Cannot stop the wood")
@@ -250,6 +251,14 @@ def run(model):
         _pi.set_pull_up_down(limit_home_pin, pigpio.PUD_UP)
         _pi.set_pull_up_down(limit_max_pin, pigpio.PUD_UP)
 
+        #################################
+        pid = PID(0, 0, 0, setpoint=0)
+        pid.setpoint = 0
+        #pid.proportional_on_measurement = True
+        pid.tunings = (2.45, 0.03, 0.15)
+        pid.sample_time = 0.07 # Get this from measuting the line distance capture time
+        pid.output_limits = (-100, 200)
+        #################################
 
         caps = rv.open_cameras(model)
 
@@ -294,7 +303,9 @@ def run(model):
             continue # Kepps moving the wood until it is under the center camera
         
         # Slowdown the wood now that it is looking for a center line
-        slowdown = 0.1 # value between 0 and 1: slowdown factor
+
+        slowdown = 0.40 # value between 0 and 1: slowdown factor ####################################### Slowdown factor
+
         robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # Set new speed
 
         #time.sleep(0.1)
@@ -305,40 +316,42 @@ def run(model):
             return
         """
         caps[0].release()
-        stop_dist = 0
         # Stop the line under the blade
+        """
         while True:
             stop_dist = rv.find_distance(model,caps[2])
             rv.show(model)
             if stop_dist is not None:
-        	    stop(0.2)
+                print("Line detected.")
+                #stop(1)
                 break
-
+        """
+        print("Fine tune line. Start PID.")
         while True:
-            s = time.perf_counter() # use to find sample time of each line distance update
+            #s = time.perf_counter() # use to find sample time of each line distance update
             dist = rv.find_distance(model,caps[2])
             if (dist is not None):
                 print("Distance: " + str(dist))
-                if (dist >= -1):
-                    #print("Distance: " + str(dist))
-                    robosaw.motors.setSpeeds(0,0)
-                    break
-                bump()
-                smart_bump()
+                
+                speed = pid(dist)
+                robosaw.motors.setSpeeds(speed,speed)
+
+                #smart_bump(dist)
             rv.show(model)
-            elapsed = time.perf_counter() - s
-            print(f"Sample time: {elapsed:0.5f} seconds.")
+            #elapsed = time.perf_counter() - s
+            #print(f"Sample time: {elapsed:0.5f} seconds.")
 
         # Calculate overshoot from stop point
         t_end = time.time() + 0.5
         while time.time() < t_end:
-            if rv.find_distance(model,caps[2]) < model.allowable_overshoot:
+            dist = rv.find_distance(model,caps[2])
+            if dist is not None:
                 rv.show(model)
-
+        
         #time.sleep(0.5) # wait half a second to see if the wood oversoots
         dist = rv.find_distance(model,caps[2])
         rv.show(model)
-        print("\nOvershoot/undershoot distance: " + str(-dist))
+        print("\nOvershoot/undershoot distance: " + str(dist))
         
 
         # Close the center capture
@@ -360,7 +373,7 @@ def eject_btn_callback(channel):
     eject()
 
 def cut_btn_callback(channel):
-    cut(model)
+    #cut(model)
     print("cut button pressed")
     
 

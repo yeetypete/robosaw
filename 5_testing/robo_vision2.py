@@ -222,7 +222,7 @@ def wood_is_under(model,cap):
 
     number_of_white_pix1 = np.sum(mask1 == 255)
     if number_of_white_pix1 < model.color_thresh_wood_detection:
-        print("Wood is under blade")
+        #print("Wood is under blade")
         return True
     else:
         print("No wood under the blade")
@@ -265,7 +265,7 @@ def wood_is_loaded(model,cap):
         print("Wood is loaded")
         return True
     else:
-        print("Waiting for you to give me the wood...")
+        #print("Waiting for you to give me the wood...")
         return False
 
 def show_logo(model):

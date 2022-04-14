@@ -6,15 +6,6 @@ class Model(object):
 
     """ RoboSaw environment model """
 
-    #### PID ####
-    
-    pid = PID(5, 0.01, 0.1, setpoint=0)
-    pid.proportional_on_measurement = True
-    pid.tunings = (1.0, 0.2, 0.4)
-    pid.sample_time = 0.01 # Get this from measuting the line distance capture time
-    pid.output_limits = (0, 300)
-    #speed = pid(distance)
-
     #### Functions ####
     def __init__(self, MAX_ANGLE):
         self.max_angle = MAX_ANGLE
@@ -219,9 +210,9 @@ class Model(object):
         if y_off == 0:
             return (rho/np.cos(theta))  - center
         if rho > 0:
-            return (rho/np.cos(theta)-y_off*np.tan(theta)) - center
+            return ((rho/np.cos(theta)-y_off*np.tan(theta)) - center)# - np.tan(theta)*y_off
         if rho < 0:
-            return (rho/np.cos(theta)+y_off*np.tan(theta)) - center
+            return ((rho/np.cos(theta)+y_off*np.tan(theta)) - center)# + np.tan(theta)*y_off
         if rho == 0:
             if theta > np.pi/2:
                 return (-y_off*np.tan(theta)) - center
@@ -232,7 +223,7 @@ class Model(object):
 
     #### Model constants ####
 
-    num_angle_samples = 10
+    num_angle_samples = 1
     num_stds = 2
 
 
