@@ -283,7 +283,7 @@ class Model(object):
     right_color_cam2 = crop_vals_color_cam[1][1]
 
 
-    # Crop color_cam2 Crops top color
+    # Crop for 2x6
     crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right_2x6.npy')
 
     top_color_cam_2x6 = crop_vals_color_cam[0][0]
@@ -291,6 +291,14 @@ class Model(object):
     left_color_cam_2x6 = crop_vals_color_cam[1][0]
     right_color_cam_2x6 = crop_vals_color_cam[1][1]
 
+
+    # Crop for 4x4
+    crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right_4x4.npy')
+
+    top_color_cam_4x4 = crop_vals_color_cam[0][0]
+    bottom_color_cam_4x4 = crop_vals_color_cam[0][1]
+    left_color_cam_4x4 = crop_vals_color_cam[1][0]
+    right_color_cam_4x4 = crop_vals_color_cam[1][1]
 
     # Crop angle_cam
     crop_vals_angle_cam = np.load('__calibrate__/angle_cam_top_bottom_left_right.npy')
@@ -315,7 +323,7 @@ class Model(object):
     line_detection_threshold = 110 #100
     center_line_detection_threshold = int(circle_rad/2)
     color_thresh_wood_detection = 20
-
+    4x4_detected = False
     pass
 
 

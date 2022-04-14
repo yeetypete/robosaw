@@ -10,8 +10,6 @@ import RPi.GPIO as GPIO
 import os
 import numpy as np
 from simple_pid import PID
-# Change directory
-#os.chdir("~/robosaw/4_testing/")
 
 ### USED GPIO PINS ###
 
@@ -190,35 +188,36 @@ def cut(model):
             _pi.write(blade_relay_pin, 1) # spin up the blade
 
             # Lower the blade as it spins
-            # ... TODO ...
-            act_time = 7
-            motor3.setSpeed(-480)
-            #time.sleep(act_time)
-            t_end = time.time() + act_time
-            while time.time() < t_end:
-                if(rv.wood_is_under(model,caps[0])):
-                    rv.show(model)
-                else:
-                    print("Wood not under blade. Stopping...")
-                    return
+                act_time = 7
+                motor3.setSpeed(-480)
+                #time.sleep(act_time)
+                t_end = time.time() + act_time
+                while time.time() < t_end:
+                    if(rv.wood_is_under(model,caps[0])):
+                        rv.show(model)
+                    else:
+                        print("Wood not under blade. Stopping...")
+                        return
                     
 
-            # Raise blade again
-            # ... TODO ...
-            motor3.setSpeed(480)
-            t_end = time.time() + act_time/2
-            while time.time() < t_end:
-                if(rv.wood_is_under(model,caps[0])):
-                    rv.show(model)
+                # Raise blade again
+                # ... TODO ...
+                motor3.setSpeed(480)
+                t_end = time.time() + act_time/2
+                while time.time() < t_end:
+                    if(rv.wood_is_under(model,caps[0])):
+                        rv.show(model)
 
-            _pi.write(blade_relay_pin, 0) # Stop the blade
+                _pi.write(blade_relay_pin, 0) # Stop the blade
 
-            t_end = time.time() + act_time/2
-            while time.time() < t_end:
-                if(rv.wood_is_under(model,caps[0])):
-                    rv.show(model)
+                t_end = time.time() + act_time/2
+                while time.time() < t_end:
+                    if(rv.wood_is_under(model,caps[0])):
+                        rv.show(model)
 
-            motor3.setSpeed(0)
+                motor3.setSpeed(0)
+            else:
+                # TODO - lower only a little for 4x4
                 
         else:
             print("\nWood is not propperly in place to make the cut")
@@ -267,6 +266,11 @@ def run(model):
             rv.show(model)
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
         
+        if rv.wood_is_4x4():
+            model.4x4_detected = True
+        else:
+            model.4x4_detected = False
+
         if rv.wood_is_2x6():
             model.max_angle = 10
         else:
@@ -324,18 +328,19 @@ def run(model):
         """
         caps[0].release()
         # Stop the line under the blade
-        """
+        
         while True:
             stop_dist = rv.find_distance(model,caps[2])
             rv.show(model)
             if stop_dist is not None:
                 print("Line detected.")
-                #stop(1)
+                hard_stop(0.1)
                 break
-        """
-        print("Fine tune line. Start PID.")
-        while True:
-            #s = time.perf_counter() # use to find sample time of each line distance update
+        
+
+        print("Start PID.")
+        t_end = time.time() + 5 # run PID loop for specified time after the line is detected
+        while time.time() < t_end:
             dist = rv.find_distance(model,caps[2])
             if (dist is not None):
                 print("Distance: " + str(dist))
@@ -343,11 +348,7 @@ def run(model):
                 speed = center_pid(dist)
                 robosaw.motors.setSpeeds(speed,speed)
 
-                #smart_bump(dist)
-            rv.show(model)
-            #elapsed = time.perf_counter() - s
-            #print(f"Sample time: {elapsed:0.5f} seconds.")
-
+        robosaw.motors.setSpeeds(0,0)
         # Calculate overshoot from stop point
         t_end = time.time() + 0.5
         while time.time() < t_end:
