@@ -19,11 +19,25 @@ height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 # Create a window named trackbars.
 cv2.namedWindow("Trackbars", cv2.WINDOW_AUTOSIZE)
 
+try:
+    # Crop for 2x6
+    crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right_2x6.npy')
+
+    top_color_cam_2x6 = crop_vals_color_cam[0][0]
+    bottom_color_cam_2x6 = height - crop_vals_color_cam[0][1]
+    left_color_cam_2x6 = crop_vals_color_cam[1][0]
+    right_color_cam_2x6 = width - crop_vals_color_cam[1][1]
+except:
+    top_color_cam_2x6 = 100
+    bottom_color_cam_2x6 = 200
+    left_color_cam_2x6 = 100
+    right_color_cam_2x6 = 200
+
 # trackbars for each edge
-cv2.createTrackbar("left", "Trackbars", 0, int(width) - 1, nothing)
-cv2.createTrackbar("right", "Trackbars", 0, int(width) - 1, nothing)
-cv2.createTrackbar("top", "Trackbars", 0, int(height) - 1, nothing)
-cv2.createTrackbar("bottom", "Trackbars", 0, int(height) - 1, nothing)
+cv2.createTrackbar("left", "Trackbars", left_color_cam_2x6, int(width) - 1, nothing)
+cv2.createTrackbar("right", "Trackbars", right_color_cam_2x6, int(width) - 1, nothing)
+cv2.createTrackbar("top", "Trackbars", top_color_cam_2x6, int(height) - 1, nothing)
+cv2.createTrackbar("bottom", "Trackbars", bottom_color_cam_2x6, int(height) - 1, nothing)
 
 while True:
     
@@ -40,18 +54,22 @@ while True:
     top = cv2.getTrackbarPos("top", "Trackbars")
     bottom = cv2.getTrackbarPos("bottom", "Trackbars")
  
-    cropped_image = frame[top:height-bottom, left:width-right]
-    
+    #cropped_image = frame[top:height-bottom, left:width-right]
+    if (top < bottom and right > left):
+        roi = cv2.rectangle(frame,(left,top),(right,bottom),(255,255,0),1)
+    else:
+        roi = cv2.rectangle(frame,(left,top),(right,bottom),(0,0,255),1)
+
     #cv2.imshow('Trackbars',cv2.resize(cropped_image,None,fx=0.5,fy=0.5))
-    cv2.imshow('Preview',cropped_image)
-    
+    #cv2.imshow('Preview',cropped_image)
+    cv2.imshow('Preview',roi)
     # If the user presses ESC then exit the program
     key = cv2.waitKey(1)
     if key == 27:
         break
     
     # If the user presses `s` then print this array and save it to the saw
-    if key == ord('s'):
+    if (key == ord('s') and (top < bottom and right > left)):
         
         thearray = [[top,height-bottom], [left,width-right]]
         print(thearray)
