@@ -52,7 +52,7 @@ def initialize():
     """ Run this first. Returns (model,caps)"""
 
     # Initialize Model object 'model'
-    MAX_ANGLE = 50
+    MAX_ANGLE = 52
     model = Model(MAX_ANGLE)
 
     # Initialize the camera captures
@@ -251,13 +251,13 @@ def run(model):
         _pi.set_pull_up_down(limit_home_pin, pigpio.PUD_UP)
         _pi.set_pull_up_down(limit_max_pin, pigpio.PUD_UP)
 
-        #################################
-        pid = PID(0, 0, 0, setpoint=0)
-        pid.setpoint = 0
-        #pid.proportional_on_measurement = True
-        pid.tunings = (2.45, 0.03, 0.15)
-        pid.sample_time = 0.07 # Get this from measuting the line distance capture time
-        pid.output_limits = (-100, 200)
+        ############# PID ###############
+        center_pid = PID(0, 0, 0, setpoint=0)
+        center_pid.setpoint = 0
+        center_pid.proportional_on_measurement = False
+        center_pid.tunings = (2.45, 0.03, 0.15)
+        center_pid.sample_time = 0.07 # Get this from measuting the line distance capture time
+        center_pid.output_limits = (-100, 200)
         #################################
 
         caps = rv.open_cameras(model)
@@ -266,7 +266,13 @@ def run(model):
         while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
             rv.show(model)
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
+        
+        if rv.wood_is_2x6():
+            model.max_angle = 10
+        else:
+            model.max_angle = 52
         caps[0].release()
+
 
         # Once wood is loaded accumlate angle samples
         angles = []
@@ -286,7 +292,8 @@ def run(model):
         
 
         # Rotate the blade to correct angle
-        # ... TODO ...
+        
+        #blade_angle = 0 # override the angle if its a 2x6
         print("\nRotate blade to " + str(blade_angle) + " degrees.\n")
         caps[1].release() # Close the angle camera
 
@@ -333,7 +340,7 @@ def run(model):
             if (dist is not None):
                 print("Distance: " + str(dist))
                 
-                speed = pid(dist)
+                speed = center_pid(dist)
                 robosaw.motors.setSpeeds(speed,speed)
 
                 #smart_bump(dist)
@@ -391,7 +398,7 @@ if __name__ == "__main__":
     GPIO.setup(eject_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(cut_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    rv.show_logo(model)
+    rv.show(model)
 
     """
     run_flag = 0
