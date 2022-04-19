@@ -10,6 +10,8 @@ import RPi.GPIO as GPIO
 import os
 import numpy as np
 from simple_pid import PID
+import matplotlib.pyplot as plt
+from ButtonHandler import ButtonHandler
 
 ### USED GPIO PINS ###
 
@@ -18,6 +20,11 @@ from simple_pid import PID
 ### AVAILABLE PINS ###
 
 # 0, 1, 3, 14, 19
+
+# PID
+kP = 2.5
+kI = 2.75
+kD = 0.075
 
 # flags
 run_flag = True
@@ -188,37 +195,36 @@ def cut(model):
             _pi.write(blade_relay_pin, 1) # spin up the blade
 
             # Lower the blade as it spins
-                act_time = 7
-                motor3.setSpeed(-480)
-                #time.sleep(act_time)
-                t_end = time.time() + act_time
-                while time.time() < t_end:
-                    if(rv.wood_is_under(model,caps[0])):
-                        rv.show(model)
-                    else:
-                        print("Wood not under blade. Stopping...")
-                        return
+            act_time = 7
+            motor3.setSpeed(-480)
+            #time.sleep(act_time)
+            t_end = time.time() + act_time
+            while time.time() < t_end:
+                if(rv.wood_is_under(model,caps[0])):
+                    rv.show(model)
+                else:
+                    print("Wood not under blade. Stopping...")
+                    return
                     
 
-                # Raise blade again
-                # ... TODO ...
-                motor3.setSpeed(480)
-                t_end = time.time() + act_time/2
-                while time.time() < t_end:
-                    if(rv.wood_is_under(model,caps[0])):
-                        rv.show(model)
+            # Raise blade again
+            # ... TODO ...
+            motor3.setSpeed(480)
+            t_end = time.time() + act_time/2
+            while time.time() < t_end:
+                if(rv.wood_is_under(model,caps[0])):
+                    rv.show(model)
 
-                _pi.write(blade_relay_pin, 0) # Stop the blade
+            _pi.write(blade_relay_pin, 0) # Stop the blade
 
-                t_end = time.time() + act_time/2
-                while time.time() < t_end:
-                    if(rv.wood_is_under(model,caps[0])):
-                        rv.show(model)
+            t_end = time.time() + act_time/2
+            while time.time() < t_end:
+                if(rv.wood_is_under(model,caps[0])):
+                    rv.show(model)
 
-                motor3.setSpeed(0)
-            else:
-                # TODO - lower only a little for 4x4
-                
+            motor3.setSpeed(0)
+            #else:
+                # TODO - lower only a little for 4x4    
         else:
             print("\nWood is not propperly in place to make the cut")
         # indent until Eject if uncommented later
@@ -254,9 +260,9 @@ def run(model):
         center_pid = PID(0, 0, 0, setpoint=0)
         center_pid.setpoint = 0
         center_pid.proportional_on_measurement = False
-        center_pid.tunings = (2.45, 0.03, 0.15)
-        center_pid.sample_time = 0.07 # Get this from measuting the line distance capture time
-        center_pid.output_limits = (-100, 200)
+        center_pid.tunings = (kP, kI, kD)
+        center_pid.sample_time = 0.035 # Get this from measuting the line distance capture time
+        center_pid.output_limits = (-400, 400)
         #################################
 
         caps = rv.open_cameras(model)
@@ -265,16 +271,18 @@ def run(model):
         while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
             rv.show(model)
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
-        
+        """
         if rv.wood_is_4x4():
-            model.4x4_detected = True
+            model._4x4_detected = True
         else:
-            model.4x4_detected = False
+            model._4x4_detected = False
 
-        if rv.wood_is_2x6():
+        if rv.wood_is_4x4():
             model.max_angle = 10
         else:
             model.max_angle = 52
+        """
+
         caps[0].release()
 
 
@@ -297,12 +305,11 @@ def run(model):
 
         # Rotate the blade to correct angle
         
-        #blade_angle = 0 # override the angle if its a 2x6
+        #blade_angle = 0 # override the angle if its a 4x4
         print("\nRotate blade to " + str(blade_angle) + " degrees.\n")
         caps[1].release() # Close the angle camera
 
-        #caps = rv.open_cameras(model) # Open caps again
-        #caps[1].release()
+        """
         # Move the line close to the center and slow down
         caps[0] = cv2.VideoCapture(model.color_cam_id)
         while not caps[0].isOpened():
@@ -310,12 +317,13 @@ def run(model):
             caps[0] = cv2.VideoCapture(model.color_cam_id)
 
         while not rv.wood_is_under(model,caps[0]):
-            rv.show(model)
+            #rv.show(model)
             continue # Kepps moving the wood until it is under the center camera
-        
+        """
+
         # Slowdown the wood now that it is looking for a center line
 
-        slowdown = 0.40 # value between 0 and 1: slowdown factor ####################################### Slowdown factor
+        slowdown = 0.0 # value between 0 and 1: slowdown factor ####################################### Slowdown factor
 
         robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # Set new speed
 
@@ -326,29 +334,53 @@ def run(model):
             time.sleep(8)
             return
         """
-        caps[0].release()
+        #caps[0].release()
         # Stop the line under the blade
         
+        """
         while True:
-            stop_dist = rv.find_distance(model,caps[2])
-            rv.show(model)
-            if stop_dist is not None:
-                print("Line detected.")
-                hard_stop(0.1)
-                break
-        
-
-        print("Start PID.")
-        t_end = time.time() + 5 # run PID loop for specified time after the line is detected
-        while time.time() < t_end:
             dist = rv.find_distance(model,caps[2])
+            #rv.show(model)
+            if dist is not None:
+                print("Line detected.")
+                #hard_stop(0.5)
+                break
+        """
+        
+        dist = rv.find_distance(model,caps[2])
+        rv.show(model)
+        print("First dist: " + str(dist))
+        
+        print("Start PID.")
+
+        # Plotting #
+        setpoint, y, x = [], [], []
+        t_end = time.time() + 6 # run PID loop for specified time after the line is detected
+        start_time = time.time()
+        while time.time() < t_end:
+        #while True:
+            #sample_time_start = time.time()
+            #rv.show(model)
             if (dist is not None):
                 print("Distance: " + str(dist))
-                
                 speed = center_pid(dist)
                 robosaw.motors.setSpeeds(speed,speed)
+                x += [time.time() - start_time]
+                y += [dist]
+                setpoint += [center_pid.setpoint]
+            dist = rv.find_distance(model,caps[2])
+            #print("Sample time: " + str(time.time() - sample_time_start))
 
         robosaw.motors.setSpeeds(0,0)
+
+        # Show #
+        plt.plot(x, y, label='measured')
+        plt.plot(x, setpoint, label='target')
+        plt.xlabel('time')
+        plt.ylabel('Distance from center')
+        plt.legend()
+        plt.show()
+
         # Calculate overshoot from stop point
         t_end = time.time() + 0.5
         while time.time() < t_end:
@@ -374,20 +406,22 @@ def run(model):
 def run_btn_callback(channel):
     print("Run button pressed")
     run(model)
+    robosaw.motors.forceStop()
     
 
 def eject_btn_callback(channel):
     print("Eject button pressed")
-    eject()
+    #eject()
+    robosaw.motors.forceStop()
 
 def cut_btn_callback(channel):
+    robosaw.motors.forceStop()
+    print("Cut button pressed")
     #cut(model)
-    print("cut button pressed")
+    robosaw.motors.forceStop()
     
-
     
-
-
+# Handle keyboard interrupts
 def signal_handler(sig, frame):
     GPIO.cleanup()
     sys.exit(0)
@@ -408,16 +442,30 @@ if __name__ == "__main__":
     cut_flag = 0
     """
 
-    # interrupt to run the saw
-    GPIO.add_event_detect(run_btn, GPIO.FALLING, 
-            callback=run_btn_callback, bouncetime=300)
+    """
+    GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    cb = ButtonHandler(4, real_cb, edge='rising', bouncetime=100)
+    cb.start()
+    GPIO.add_event_detect(4, GPIO.RISING, callback=cb)
+    """
 
-    GPIO.add_event_detect(cut_btn, GPIO.FALLING, 
-            callback=cut_btn_callback, bouncetime=300)
+    # interrupt to run the saw
+    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='rising', bouncetime=100)
+    cb_run.start()
+    GPIO.add_event_detect(run_btn, GPIO.RISING, 
+            callback=cb_run)
+
+    # interrupt to cut
+    cb_cut = ButtonHandler(cut_btn, cut_btn_callback, edge='rising', bouncetime=100)
+    cb_cut.start()
+    GPIO.add_event_detect(cut_btn, GPIO.RISING, 
+            callback=cb_cut)
 
     # interrupt to feed the wood manually
-    GPIO.add_event_detect(eject_btn, GPIO.FALLING, 
-            callback=eject_btn_callback, bouncetime=300)
+    cb_eject = ButtonHandler(eject_btn, eject_btn_callback, edge='rising', bouncetime=100)
+    cb_eject.start()
+    GPIO.add_event_detect(eject_btn, GPIO.RISING, 
+            callback=cb_eject)
 
 
     signal.signal(signal.SIGINT, signal_handler)

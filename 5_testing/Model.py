@@ -210,9 +210,9 @@ class Model(object):
         if y_off == 0:
             return (rho/np.cos(theta))  - center
         if rho > 0:
-            return ((rho/np.cos(theta)-y_off*np.tan(theta)) - center)# - np.tan(theta)*y_off
+            return ((rho/np.cos(theta)+y_off*np.tan(theta)) - center)# - np.tan(theta)*y_off
         if rho < 0:
-            return ((rho/np.cos(theta)+y_off*np.tan(theta)) - center)# + np.tan(theta)*y_off
+            return ((rho/np.cos(theta)-y_off*np.tan(theta)) - center)# + np.tan(theta)*y_off
         if rho == 0:
             if theta > np.pi/2:
                 return (-y_off*np.tan(theta)) - center
@@ -283,13 +283,13 @@ class Model(object):
     right_color_cam2 = crop_vals_color_cam[1][1]
 
 
-    # Crop for 2x6
-    crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right_2x6.npy')
+    # Crop for 4x4
+    crop_vals_color_cam = np.load('__calibrate__/color_cam_top_bottom_left_right_4x4.npy')
 
-    top_color_cam_2x6 = crop_vals_color_cam[0][0]
-    bottom_color_cam_2x6 = crop_vals_color_cam[0][1]
-    left_color_cam_2x6 = crop_vals_color_cam[1][0]
-    right_color_cam_2x6 = crop_vals_color_cam[1][1]
+    top_color_cam_4x4 = crop_vals_color_cam[0][0]
+    bottom_color_cam_4x4 = crop_vals_color_cam[0][1]
+    left_color_cam_4x4 = crop_vals_color_cam[1][0]
+    right_color_cam_4x4 = crop_vals_color_cam[1][1]
 
 
     # Crop for 4x4
@@ -323,7 +323,7 @@ class Model(object):
     line_detection_threshold = 110 #100
     center_line_detection_threshold = int(circle_rad/2)
     color_thresh_wood_detection = 20
-    4x4_detected = False
+    _4x4_detected = False
     pass
 
 

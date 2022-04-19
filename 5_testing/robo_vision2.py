@@ -197,7 +197,7 @@ def img_proc_display(model,cap):
             cv2.destroyAllWindows()
             break
 
-def wood_is_2x6(model,cap):
+def wood_is_4x4(model,cap):
     ret , frame = cap.read()
     while ret == False:
        print("Can't receive frame. Retrying ...")
@@ -205,7 +205,7 @@ def wood_is_2x6(model,cap):
        cap = cv2.VideoCapture(model.color_cam_id)
        ret, frame = cap.read()
     #edges = cv2.Canny(frame,15,30,apertureSize = 3)
-    frame1 = frame[model.top_color_cam_2x6:model.bottom_color_cam_2x6, model.left_color_cam_2x6:model.right_color_cam_2x6]
+    frame1 = frame[model.top_color_cam_4x4:model.bottom_color_cam_4x4, model.left_color_cam_4x4:model.right_color_cam_4x4]
     hsv1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2HSV) #color space transformation to hsv
     lower_green = np.array([model.h_lower_thresh1,model.s_lower_thresh1,model.v_lower_thresh1])
     upper_green = np.array([model.h_upper_thresh1,model.s_upper_thresh1,model.v_upper_thresh1])
@@ -221,10 +221,10 @@ def wood_is_2x6(model,cap):
 
     number_of_white_pix1 = np.sum(mask1 == 255)
     if number_of_white_pix1 < model.color_thresh_wood_detection:
-        print("Wood is 2x6")
+        print("Wood is 4x4")
         return True
     else:
-        #print("Wood is not 2x6")
+        #print("Wood is not 4x4")
         return False
 
 def wood_is_4x4(model,cap):
@@ -284,7 +284,7 @@ def wood_is_under(model,cap):
         #print("Wood is under blade")
         return True
     else:
-        print("No wood under the blade")
+        #print("No wood under the blade")
         return False
 
 def wood_is_loaded(model,cap):
