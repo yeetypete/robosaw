@@ -22,9 +22,10 @@ from ButtonHandler import ButtonHandler
 # 0, 1, 3, 14, 19
 
 # PID
-kP = 2.5
-kI = 2.75
-kD = 0.075
+kP = 5.25 * 0.6
+#kI = 0.4 / 1.2
+kI = 0.4 * 0.5
+kD = 0.4 / 10
 
 # flags
 run_flag = True
@@ -161,6 +162,7 @@ def stop(secs):
 
 def cut(model):
     try:
+        model.cut_initiated = True
         caps = rv.open_cameras(model)
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
@@ -233,8 +235,10 @@ def cut(model):
         close_caps(caps) # Always close captures after
     except Exception as e: 
         print(e)
+        model.cut_initiated = False
         close_caps(caps) # Close caps if program fails or gets cancelled
     finally:
+        model.cut_initiated = False
         close_caps(caps)
 
 def run(model):
@@ -247,6 +251,7 @@ def run(model):
     
     
     try:
+        model.cut_initiated = False
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
         motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT, _pi)
@@ -262,7 +267,7 @@ def run(model):
         center_pid.proportional_on_measurement = False
         center_pid.tunings = (kP, kI, kD)
         center_pid.sample_time = 0.035 # Get this from measuting the line distance capture time
-        center_pid.output_limits = (-400, 400)
+        center_pid.output_limits = (-480, 480)
         #################################
 
         caps = rv.open_cameras(model)
@@ -357,8 +362,10 @@ def run(model):
         setpoint, y, x = [], [], []
         t_end = time.time() + 6 # run PID loop for specified time after the line is detected
         start_time = time.time()
-        while time.time() < t_end:
-        #while True:
+        #while time.time() < t_end:
+        while True:
+            if model.cut_initiated == True:
+                break
             #sample_time_start = time.time()
             #rv.show(model)
             if (dist is not None):
@@ -415,6 +422,7 @@ def eject_btn_callback(channel):
     robosaw.motors.forceStop()
 
 def cut_btn_callback(channel):
+    model.cut_initiated = True
     robosaw.motors.forceStop()
     print("Cut button pressed")
     #cut(model)

@@ -9,6 +9,7 @@ class Model(object):
     #### Functions ####
     def __init__(self, MAX_ANGLE):
         self.max_angle = MAX_ANGLE
+        self.cut_initiated = False
         self.allowable_overshoot = 10
         self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
         self.logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
@@ -318,6 +319,7 @@ class Model(object):
     """
     # Other
     #show = np.zeros((100,100,3), np.uint8)
+    
     logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
     show = logo
     line_detection_threshold = 110 #100
