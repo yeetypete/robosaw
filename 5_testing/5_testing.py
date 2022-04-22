@@ -22,13 +22,19 @@ from ButtonHandler import ButtonHandler
 # 0, 1, 3, 14, 19
 
 # PID
-kP = 5.25 * 0.6
-#kI = 0.4 / 1.2
-kI = 0.4 * 0.5
-kD = 0.4 / 10
+max_pid_speed = 480
 
-# flags
-run_flag = True
+
+kP = 3
+kI = 0.002
+kD = 0.3
+
+
+"""
+kP = 1.5
+kI = 0.4
+kD = 0.36
+"""
 
 # Button pin assignments
 run_btn = 9
@@ -139,8 +145,8 @@ def smart_bump(dist):
 def hard_stop(secs):
     """ bumps the wood for a short period of time """
     try:
-        robosaw.motors.setSpeeds(-200,-200)
-        time.sleep(0.005)
+        robosaw.motors.setSpeeds(-480,-480)
+        time.sleep(0.1)
         robosaw.motors.setSpeeds(0,0)
         time.sleep(secs)
     except Exception as e: 
@@ -160,9 +166,19 @@ def stop(secs):
         robosaw.motors.setSpeeds(0,0)
         pass
 
+def raise_blade():
+    _pi = robosaw.init_gpio()
+    motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT, _pi)
+    motor3.setSpeed(480)
+    time.sleep(7)
+    motor3.setSpeed(0)
+
 def cut(model):
     try:
         model.cut_initiated = True
+        if model.cut_ready == False:
+            return
+        time.sleep(1) # Wait for captures to close from Run()
         caps = rv.open_cameras(model)
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
@@ -176,28 +192,29 @@ def cut(model):
         #print("\nPress 'cut' button to make the cut.") # Alternatively use buttons or both for redundancy
         #GPIO.wait_for_edge(cut_btn, GPIO.FALLING) # Blocking statement that waits for user to press the cut button before proceeding to make the cut
         
-        
 
         #not GPIO.input(cut_btn)
         #if not GPIO.input(cut_btn): # indent until Eject if uncommented later
         print("\nCut initiated. GTFO!")
 
-        caps[0] = cv2.VideoCapture(model.color_cam_id)######################
-        while not caps[0].isOpened():###
-            print("Cannot open color camera")####
-            caps[0] = cv2.VideoCapture(model.color_cam_id)######
+        try:
+            caps[0] = cv2.VideoCapture(model.color_cam_id)######################
+        except:
+            while not caps[0].isOpened():###
+                print("Cannot open color camera")####
+                caps[0] = cv2.VideoCapture(model.color_cam_id)######
 
         if not rv.wood_is_under(model,caps[0]): # check for end of wood
-            robosaw.motors.setSpeeds(args.speed, args.speed) # Set new speed
-            time.sleep(5)
             return
+            #robosaw.motors.setSpeeds(args.speed, args.speed) # Set new speed
+            #time.sleep(5) # Eject for 5 seconds if end is detected
 
         if rv.wood_is_under(model,caps[0]): # Final check to make sure something is actually under the blade
             # Spin the blade
             _pi.write(blade_relay_pin, 1) # spin up the blade
 
             # Lower the blade as it spins
-            act_time = 7
+            act_time = 6.5
             motor3.setSpeed(-480)
             #time.sleep(act_time)
             t_end = time.time() + act_time
@@ -205,8 +222,8 @@ def cut(model):
                 if(rv.wood_is_under(model,caps[0])):
                     rv.show(model)
                 else:
-                    print("Wood not under blade. Stopping...")
-                    return
+                    print("Wood not under blade")
+                    
                     
 
             # Raise blade again
@@ -229,17 +246,22 @@ def cut(model):
                 # TODO - lower only a little for 4x4    
         else:
             print("\nWood is not propperly in place to make the cut")
+            return
         # indent until Eject if uncommented later
         
         caps[0].release() #########################
         close_caps(caps) # Always close captures after
     except Exception as e: 
         print(e)
-        model.cut_initiated = False
         close_caps(caps) # Close caps if program fails or gets cancelled
-    finally:
         model.cut_initiated = False
-        close_caps(caps)
+        
+    finally:
+        try:
+            close_caps(caps)
+        except:
+            print("No captures open")
+        model.cut_initiated = False
 
 def run(model):
     """ Intake at idle speed until wood is detected, 
@@ -251,7 +273,10 @@ def run(model):
     
     
     try:
-        model.cut_initiated = False
+        #model.cut_initiated = False
+        if model.cut_initiated == True:
+            #rv.show(model)
+            return
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
         motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT, _pi)
@@ -267,7 +292,7 @@ def run(model):
         center_pid.proportional_on_measurement = False
         center_pid.tunings = (kP, kI, kD)
         center_pid.sample_time = 0.035 # Get this from measuting the line distance capture time
-        center_pid.output_limits = (-480, 480)
+        center_pid.output_limits = (-max_pid_speed,max_pid_speed)
         #################################
 
         caps = rv.open_cameras(model)
@@ -332,7 +357,6 @@ def run(model):
 
         robosaw.motors.setSpeeds(args.speed*(1-slowdown), args.speed*(1-slowdown)) # Set new speed
 
-        #time.sleep(0.1)
         """
         if not rv.wood_is_loaded(model,caps[0]): # check for end of wood
             robosaw.motors.setSpeeds(args.speed, args.speed) # Set new speed
@@ -351,36 +375,54 @@ def run(model):
                 #hard_stop(0.5)
                 break
         """
-        
-        dist = rv.find_distance(model,caps[2])
-        rv.show(model)
-        print("First dist: " + str(dist))
-        
-        print("Start PID.")
-
         # Plotting #
         setpoint, y, x = [], [], []
-        t_end = time.time() + 6 # run PID loop for specified time after the line is detected
         start_time = time.time()
+        dist = rv.find_distance(model,caps[2])
+        print("First dist: " + str(dist))
+        x += [time.time() - start_time]
+        y += [dist]
+        setpoint += [center_pid.setpoint]
+        while dist == None:
+            dist = rv.find_distance(model,caps[2])
+        stop(0.01)
+        while dist == None:
+            dist = rv.find_distance(model,caps[2])
+        print("PID start dist: " + str(dist))
+        x += [time.time() - start_time]
+        y += [dist]
+        setpoint += [center_pid.setpoint]
+        
+        t_end = time.time() + 10 # run PID loop for specified time after the line is detected
+        
         #while time.time() < t_end:
         while True:
             if model.cut_initiated == True:
-                break
+                # Quit #
+                close_caps(caps)
+                #break
+                return
             #sample_time_start = time.time()
             #rv.show(model)
             if (dist is not None):
-                print("Distance: " + str(dist))
+                model.dist = dist
+                #print("Distance: " + str(dist))
                 speed = center_pid(dist)
                 robosaw.motors.setSpeeds(speed,speed)
                 x += [time.time() - start_time]
                 y += [dist]
                 setpoint += [center_pid.setpoint]
+                
+                model.cut_ready = True
+            else:
+                model.cut_ready = False
             dist = rv.find_distance(model,caps[2])
+            
             #print("Sample time: " + str(time.time() - sample_time_start))
 
         robosaw.motors.setSpeeds(0,0)
-
         # Show #
+        rv.show(model)
         plt.plot(x, y, label='measured')
         plt.plot(x, setpoint, label='target')
         plt.xlabel('time')
@@ -388,6 +430,7 @@ def run(model):
         plt.legend()
         plt.show()
 
+        """
         # Calculate overshoot from stop point
         t_end = time.time() + 0.5
         while time.time() < t_end:
@@ -399,7 +442,7 @@ def run(model):
         dist = rv.find_distance(model,caps[2])
         rv.show(model)
         print("\nOvershoot/undershoot distance: " + str(dist))
-        
+        """
 
         # Close the center capture
         caps[2].release()
@@ -425,7 +468,7 @@ def cut_btn_callback(channel):
     model.cut_initiated = True
     robosaw.motors.forceStop()
     print("Cut button pressed")
-    #cut(model)
+    cut(model)
     robosaw.motors.forceStop()
     
     
@@ -441,7 +484,7 @@ if __name__ == "__main__":
     GPIO.setup(eject_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(cut_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    rv.show(model)
+    #raise_blade()
 
     """
     run_flag = 0
@@ -452,27 +495,27 @@ if __name__ == "__main__":
 
     """
     GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    cb = ButtonHandler(4, real_cb, edge='rising', bouncetime=100)
+    cb = ButtonHandler(4, real_cb, edge='falling', bouncetime=100)
     cb.start()
-    GPIO.add_event_detect(4, GPIO.RISING, callback=cb)
+    GPIO.add_event_detect(4, GPIO.FALLING, callback=cb)
     """
 
     # interrupt to run the saw
-    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='rising', bouncetime=100)
+    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='falling', bouncetime=100)
     cb_run.start()
-    GPIO.add_event_detect(run_btn, GPIO.RISING, 
+    GPIO.add_event_detect(run_btn, GPIO.FALLING, 
             callback=cb_run)
 
     # interrupt to cut
-    cb_cut = ButtonHandler(cut_btn, cut_btn_callback, edge='rising', bouncetime=100)
+    cb_cut = ButtonHandler(cut_btn, cut_btn_callback, edge='falling', bouncetime=100)
     cb_cut.start()
-    GPIO.add_event_detect(cut_btn, GPIO.RISING, 
+    GPIO.add_event_detect(cut_btn, GPIO.FALLING, 
             callback=cb_cut)
 
     # interrupt to feed the wood manually
-    cb_eject = ButtonHandler(eject_btn, eject_btn_callback, edge='rising', bouncetime=100)
+    cb_eject = ButtonHandler(eject_btn, eject_btn_callback, edge='falling', bouncetime=100)
     cb_eject.start()
-    GPIO.add_event_detect(eject_btn, GPIO.RISING, 
+    GPIO.add_event_detect(eject_btn, GPIO.FALLING, 
             callback=cb_eject)
 
 
@@ -481,24 +524,11 @@ if __name__ == "__main__":
     
 
     try:
-        #run()
         robosaw.motors.forceStop()
     except Exception as e: 
         print(e)
         robosaw.motors.forceStop()
     finally:
         robosaw.motors.forceStop()
-
-    """
-    while(1):
-        try:
-            run()
-            robosaw.motors.forceStop()
-        except Exception as e: 
-            print(e)
-            robosaw.motors.forceStop()
-        finally:
-            robosaw.motors.forceStop()
-    """
 
     

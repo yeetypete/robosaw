@@ -8,8 +8,10 @@ class Model(object):
 
     #### Functions ####
     def __init__(self, MAX_ANGLE):
+        self.dist = None
         self.max_angle = MAX_ANGLE
         self.cut_initiated = False
+        self.cut_ready = False
         self.allowable_overshoot = 10
         self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
         self.logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
@@ -154,7 +156,7 @@ class Model(object):
         rho = line[0]
         theta = line[1]
         distance = self.find_dist_from_center(line)
-        print("Distance: " + str(distance))
+        #print("Distance: " + str(distance))
         a = np.cos(theta)
         b = np.sin(theta)
         x0 = a * rho
@@ -323,7 +325,7 @@ class Model(object):
     logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
     show = logo
     line_detection_threshold = 110 #100
-    center_line_detection_threshold = int(circle_rad/2)
+    center_line_detection_threshold = int(circle_rad/3)
     color_thresh_wood_detection = 20
     _4x4_detected = False
     pass

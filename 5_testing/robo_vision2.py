@@ -340,11 +340,8 @@ def show_logo(model):
 
 def show(model):
     cv2.namedWindow("preview",cv2.WINDOW_NORMAL)
-
-    
     cv2.resizeWindow("preview", 2000,1800)
     cv2.imshow("preview", model.show)
-    
     key = cv2.waitKey(1)
     if key == ord('q'):
             return False
