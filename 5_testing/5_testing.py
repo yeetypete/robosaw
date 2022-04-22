@@ -178,7 +178,7 @@ def cut(model):
         model.cut_initiated = True
         if model.cut_ready == False:
             return
-        time.sleep(1) # Wait for captures to close from Run()
+        #time.sleep(1) # Wait for captures to close from Run()
         caps = rv.open_cameras(model)
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
@@ -403,15 +403,17 @@ def run(model):
                 #break
                 return
             #sample_time_start = time.time()
-            #rv.show(model)
+            
             if (dist is not None):
                 model.dist = dist
                 #print("Distance: " + str(dist))
                 speed = center_pid(dist)
                 robosaw.motors.setSpeeds(speed,speed)
+                """
                 x += [time.time() - start_time]
                 y += [dist]
                 setpoint += [center_pid.setpoint]
+                """
                 
                 model.cut_ready = True
             else:
