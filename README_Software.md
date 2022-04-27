@@ -1,6 +1,6 @@
-#**RoboSaw Software Guide**
+# **RoboSaw Software Guide**
 
-##**Calibration Scripts**
+## **Calibration Scripts**
 
 All these scripts are used to calibrate certain parts of the RoboSaw's
 vision system. The outputs are saved in a local \_\_calibrate\_\_ folder
@@ -86,7 +86,7 @@ h.  Run python3 tune_canny.py to tune the edge detection. Place a sample
 
 > Tuning the edge detection: images
 
-#**Model.py**
+# **Model.py**
 
 This is a class which stores all the variables related to the current
 state of the RoboSaw. As sensor readings are processed, an instance of
@@ -98,14 +98,14 @@ used in robo_vision2 and elsewhere throughout the program. Although
 these functions aren't used to store information about the RoboSaw's
 state, it was a design choice to include them here for convenience.
 
-##class Model(object)
+## class Model(object)
 
-###\_\_init\_\_(self, MAX_ANGLE)
+### \_\_init\_\_(self, MAX_ANGLE)
 
 This is the constructor. It initializes the maximum angle that the saw
 is able to cut. In the case of the saw, we used it is set to 52 degrees.
 
-###best_angle(self, arr)
+### best_angle(self, arr)
 
 Returns the trimmed mean of an array of angle samples. When the line
 first passes under the angle detection camera, each sample is
@@ -114,7 +114,7 @@ desired number of samples. It then trims all datapoints outside of two
 standard deviations from the mean and then takes the mean of that
 trimmed dataset. This is done to eliminate outliers if there are any.
 
-###img_proc(self,frame)
+### img_proc(self,frame)
 
 Given an image frame it returns a processed version of that frame of the
 same size as the input frame. Here it is used to convert to grayscale,
@@ -122,14 +122,14 @@ add cv2.GaussianBlur to reduce high frequency noise from the image, then
 finally apply a cv2.Canny edge detection. The returned frame is a binary
 edge map showing all the detected edges present in the input frame.
 
-###img_proc_angle_detect(self,frame)
+### img_proc_angle_detect(self,frame)
 
 Given binary edge map returned from img_proc(frame) it applies a Hough
 transform to detect lines from the edges. Each line is represented by a
 rho & theta pair. This has been optimized to detect lines from the
 camera which detects angles.
 
-###img_proc_line_detect_center(self,frame)
+### img_proc_line_detect_center(self,frame)
 
 Given binary edge map returned from img_proc(frame) it applies a Hough
 transform to detect lines from the edges. Each line is represented by a
@@ -137,7 +137,7 @@ rho & theta pair. This has been optimized to detect lines from the
 center camera which detects a lines distance from the center of the
 blade.
 
-###get_best_line(self,lines)
+### get_best_line(self,lines)
 
 Given an accumulator array created by running a Hough transform on an
 edge map, this trims all the lines which are outside the maximum cutting
@@ -147,13 +147,13 @@ eliminates a lot of the lines captured by strongly colored grains in the
 wood. Then from the remaining lines, the one with the highest
 accumulator value wins and is selected as the most likely line.
 
-###get_saw_angle(self,line)
+### get_saw_angle(self,line)
 
 Given a line, returns the angle which the saw must rotate to in order to
 make the cut. The angle is first converted to degrees and then it is
 signed to show if the angle is to the left or right of zero degrees.
 
-###find_dist_from_center(self, line)
+### find_dist_from_center(self, line)
 
 Given a line detected by the center camera, returns the distance of that
 line from the center of the blade. The distance is in pixels. Positive
@@ -163,7 +163,7 @@ directly under the blade.
 
 Uses numpy and cv2 libraries.
 
-#**Robo_vision2.py**
+# **Robo_vision2.py**
 
 This is the main processing module used for computer vision in this
 project. This is the second version. Robo_vision was originally only
@@ -173,24 +173,24 @@ robo_vision2.
 
 Here is a breakdown of the functions defined within this module:
 
-###open_cameras(model)
+### open_cameras(model)
 
 This opens all three cameras and returns an array of the captures.
 
-###find_angle(model,cap)
+### find_angle(model,cap)
 
 This uses functions from Model to pull a frame from the angle camera,
 detect lines, pick the best line, and then find the trimmed-mean best
 angle sample from the array of angle samples. Angle returned is in
 degrees.
 
-###find_distance(model,cap)
+### find_distance(model,cap)
 
 This uses functions from Model to pull a frame from the center camera,
 detect lines, determine the best line, and then find the distance from
 the blade in pixels.
 
-###wood_is_4x4(model,cap)
+### wood_is_4x4(model,cap)
 
 This uses functions from Model to pull a frame from the color camera,
 threshold the frame based on the calibrations in Model, and then count
@@ -199,7 +199,7 @@ wood is tall enough to cover this region, all pixels turn off and it is
 assumed that the wood is 4 inches tall rather than 2 inches. Returns
 true if the wood is 4x4 and false if it is not.
 
-###wood_is_2x6(model,cap)
+### wood_is_2x6(model,cap)
 
 This uses functions from Model to pull a frame from the color camera,
 threshold the frame based on the calibrations in Model, and then count
@@ -208,7 +208,7 @@ wood is wide enough to cover this region, all pixels turn off and it is
 assumed that the wood is 6 inches wide rather than 4 inches. Returns
 true if the wood is 2x6 and false if it is not.
 
-###wood_is_loaded(model,cap)
+### wood_is_loaded(model,cap)
 
 This uses functions from Model to pull a frame from the color camera,
 threshold the frame based on the calibrations in Model, and then count
@@ -216,7 +216,7 @@ the number of pixels detected in the region of interest. This will
 return true if something is covering the intake fence over the entire
 region of interest.
 
-###wood_is_under(model,cap)
+### wood_is_under(model,cap)
 
 This uses functions from Model to pull a frame from the color camera,
 threshold the frame based on the calibrations in Model, and then count
@@ -226,13 +226,13 @@ region of interest.
 
 Uses cv2, numpy, Model, and time.
 
-#**RoboSaw.py**
+# **RoboSaw.py**
 
-###class DriverFault(Exception)
+### class DriverFault(Exception)
 
 Defines a custom exception to raise if a fault is detected.
 
-##class Actuator(object)
+## class Actuator(object)
 
 Defines pins and enables drivers to run the linear actuator.
 
@@ -250,24 +250,24 @@ Defines pins and enables drivers to run the linear actuator.
 
 -   forceStop(self) Stops the actuator.
 
-###init_gpio()
+### init_gpio()
 
 Pigpio initialization for GPIO pins
 
-###init_args()
+### init_args()
 
 Argument parser for testing
 
-###feed(distance, speed)
+### feed(distance, speed)
 
 Feeds the wood by a given distance.
 
 Uses print_function from \_\_future\_\_, Model, pigpio, argparse, and
 dual_g2_hpmd_rpi.
 
-#**ButtonHandler.py**
+# **ButtonHandler.py**
 
-##class ButtonHandler(threading.Thread)
+## class ButtonHandler(threading.Thread)
 
 Listens to each button. This handles button debouncing. In order to
 properly debounce the buttons the callback function must return quickly.
@@ -276,35 +276,35 @@ process in a new thread.
 
 Uses RPi.GPIO and threading.
 
-#**Main**
+# **Main**
 
 This is where the main function of the program lives. Functions defined
 in Main are:
 
-###initialize()
+### initialize()
 
 This initializes an instance of Model using the desired maximum angle.
 Returns that instance of Model called 'model'.
 
-###close_caps(caps)
+### close_caps(caps)
 
 Given an array of camera captures; this closes all the captures in the
 array. Used after each process is done using the cameras.
 
-###eject()
+### eject()
 
 Ejects the wood from the RoboSaw.
 
-###stop(secs)
+### stop(secs)
 
 Stops the wood from feeding for given amount of seconds.
 
-###raise_blade()
+### raise_blade()
 
 Raises the blade. Used in case the blade is stuck down after an
 emergency stop was used.
 
-###run(model)
+### run(model)
 
 This is the process that intakes the wood and centers the line under the
 blade. First it starts the intake wheels and waits for wood to be
@@ -320,7 +320,7 @@ or the "SKIP" button. Continuously running the PID loop up until the
 last second allows the wood to recover in the case that it gets bumped
 out of place by the user or other external events.
 
-###cut(model)
+### cut(model)
 
 This is the process that cuts the wood when the user presses the "CUT"
 button on the pendant. It checks first that the model is ready to make a
