@@ -36,10 +36,10 @@ for this process to be performed by a RoboSaw technician. 
     these in this order to recalibrate the RoboVision system.
 
     a.  Run python3 set_cam_index.py first to tell RoboVision which
-        > camera is used for each task. The color-cam is the one facing
-        > the fence, the angle-cam is the one that is closest to the
-        > intake side of the saw, and the center-cam is the one attached
-        > to the blade guard.
+         camera is used for each task. The color-cam is the one facing
+         the fence, the angle-cam is the one that is closest to the
+         intake side of the saw, and the center-cam is the one attached
+         to the blade guard.
 
 > Follow the prompts to save the camera indexes.
 
