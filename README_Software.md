@@ -30,12 +30,12 @@ for this process to be performed by a RoboSaw technician. 
 
 4.  You should see the Raspberry Pi boot up on the screen.
 
-5.  Open the terminal and enter 'cd /pi/robosaw'
+5.  Open the terminal and enter `cd /pi/robosaw`
 
 6.  This directory is where the calibration scripts are located. Run
     these in this order to recalibrate the RoboVision system.
 
-    a.  Run 'python3 set_cam_index.py' first to tell RoboVision which
+    a.  Run `python3 set_cam_index.py` first to tell RoboVision which
          camera is used for each task. The color-cam is the one facing
          the fence, the angle-cam is the one that is closest to the
          intake side of the saw, and the center-cam is the one attached
@@ -43,10 +43,10 @@ for this process to be performed by a RoboSaw technician. 
 
 > Follow the prompts to save the camera indexes.
 
-b.  Run 'python3 tune_color_key_top.py' to isolate the green color. Adjust
+b.  Run `python3 tune_color_key_top.py` to isolate the green color. Adjust
      the sliders until only the green is visible.
 
-c.  Run 'python3 tune_color_key_bottom.py'  to isolate the green color.
+c.  Run `python3 tune_color_key_bottom.py`  to isolate the green color.
      Adjust the sliders until only the green is visible.
 
 > Tuning the color keys:
@@ -55,13 +55,13 @@ c.  Run 'python3 tune_color_key_bottom.py'  to isolate the green color.
 > Finally adjust the Saturation and Brightness to cut out extranious pixels ![tune_color_set_all](https://user-images.githubusercontent.com/55928366/165642008-b26f4294-e927-4a1b-87e8-1a1ad6900818.png)
 
 
-d.  Run 'python3 crop_angle_cam.py' to crop the area viewed by the angle
+d.  Run `python3 crop_angle_cam.py` to crop the area viewed by the angle
      detector. Make sure that the camera only sees the wood when the
      wood is loaded.
 
 > Cropping the angle camera: image
 
-e.  Run python3 crop_center_cam.py to crop the area viewed by the center
+e.  Run `python3 crop_center_cam.py` to crop the area viewed by the center
      camera which positions the wood under the blade. Make sure the
      centerline is in the middle of the blade slot. As a rule of thumb,
      try to make the cropped circle the same radius as the circular
@@ -69,17 +69,17 @@ e.  Run python3 crop_center_cam.py to crop the area viewed by the center
 
 > Cropping and aligning the center camera: image
 
-f.  Run python3 crop_color_cam_bottom.py to isolate a small area on the
+f.  Run `python3 crop_color_cam_bottom.py` to isolate a small area on the
      green fence which, when blocked by a piece of wood, will tell the
      RoboVision program that the wood is past the angle detector. 
 
-g.  Run python3 crop_color_cam_top.py to isolate a small area on the
+g.  Run `python3 crop_color_cam_top.py` to isolate a small area on the
      green fence which, when blocked by a piece of wood, will tell the
      RoboVision program that the wood is under the blade.
 
 > Cropping the color camera regions of interest: image
 
-h.  Run python3 tune_canny.py to tune the edge detection. Place a sample
+h.  Run `python3 tune_canny.py` to tune the edge detection. Place a sample
      piece of wood with a line on it under the center camera. Adjust
      the sliders until the desired line is visible. It is ok if the
      detector picks up other edges and wood grains as these will be
