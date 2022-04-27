@@ -161,7 +161,7 @@ values mean the line is to the right of the blade and negative values
 mean it is to the left of the blade. A zero value means the line is
 directly under the blade.
 
-Uses numpy and cv2 libraries.
+*Uses numpy and cv2 libraries.*
 
 # **Robo_vision2.py**
 
@@ -224,7 +224,7 @@ the number of pixels detected in the region of interest. This will
 return true if something is covering the center fence over the entire
 region of interest.
 
-Uses cv2, numpy, Model, and time.
+*Uses cv2, numpy, Model, and time.*
 
 # **RoboSaw.py**
 
@@ -274,7 +274,7 @@ properly debounce the buttons the callback function must return quickly.
 Therefore, the callback returns quickly after starting the desired
 process in a new thread.
 
-Uses RPi.GPIO and threading.
+*Uses RPi.GPIO and threading.*
 
 # **Main**
 
@@ -329,3 +329,4 @@ then does a visual check to see if the wood is loaded properly and is
 under the blade. If the wood is in place, it turns on the blade, lowers
 the blade, then raises it and stops the blade. Finally, it closes the
 camera captures and returns.
+<br>*Uses Model, robo_vision2, RoboSaw, ButtonHandler, time, cv2, sys, signal, pigpio, RPi.GPIO, numpy, simple_pid, and matplotlib.pyplot.
