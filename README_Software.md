@@ -44,45 +44,45 @@ for this process to be performed by a RoboSaw technician. 
 > Follow the prompts to save the camera indexes.
 
 b.  Run python3 tune_color_key_top.py to isolate the green color. Adjust
-    > the sliders until only the green is visible.
+     the sliders until only the green is visible.
 
 c.  Run python3 tune_color_key_bottom.py  to isolate the green color.
-    > Adjust the sliders until only the green is visible.
+     Adjust the sliders until only the green is visible.
 
 > Tuning the color keys: image
 
 d.  Run python3 crop_angle_cam.py to crop the area viewed by the angle
-    > detector. Make sure that the camera only sees the wood when the
-    > wood is loaded.
+     detector. Make sure that the camera only sees the wood when the
+     wood is loaded.
 
 > Cropping the angle camera: image
 
 e.  Run python3 crop_center_cam.py to crop the area viewed by the center
-    > camera which positions the wood under the blade. Make sure the
-    > centerline is in the middle of the blade slot. As a rule of thumb,
-    > try to make the cropped circle the same radius as the circular
-    > section of the table.
+     camera which positions the wood under the blade. Make sure the
+     centerline is in the middle of the blade slot. As a rule of thumb,
+     try to make the cropped circle the same radius as the circular
+     section of the table.
 
 > Cropping and aligning the center camera: image
 
 f.  Run python3 crop_color_cam_bottom.py to isolate a small area on the
-    > green fence which, when blocked by a piece of wood, will tell the
-    > RoboVision program that the wood is past the angle detector. 
+     green fence which, when blocked by a piece of wood, will tell the
+     RoboVision program that the wood is past the angle detector. 
 
 g.  Run python3 crop_color_cam_top.py to isolate a small area on the
-    > green fence which, when blocked by a piece of wood, will tell the
-    > RoboVision program that the wood is under the blade.
+     green fence which, when blocked by a piece of wood, will tell the
+     RoboVision program that the wood is under the blade.
 
 > Cropping the color camera regions of interest: image
 
 h.  Run python3 tune_canny.py to tune the edge detection. Place a sample
-    > piece of wood with a line on it under the center camera. Adjust
-    > the sliders until the desired line is visible. It is ok if the
-    > detector picks up other edges and wood grains as these will be
-    > ignored by the RoboSaw. The most important thing is to adjust it
-    > so that your line is clearly visible in the preview. Try to stick
-    > to similar lighting conditions and darkness of wood for each
-    > calibration.
+     piece of wood with a line on it under the center camera. Adjust
+     the sliders until the desired line is visible. It is ok if the
+     detector picks up other edges and wood grains as these will be
+     ignored by the RoboSaw. The most important thing is to adjust it
+     so that your line is clearly visible in the preview. Try to stick
+     to similar lighting conditions and darkness of wood for each
+     calibration.
 
 > Tuning the edge detection: images
 
