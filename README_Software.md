@@ -30,12 +30,12 @@ for this process to be performed by a RoboSaw technician. 
 
 4.  You should see the Raspberry Pi boot up on the screen.
 
-5.  Open the terminal and enter cd /pi/robosaw
+5.  Open the terminal and enter 'cd /pi/robosaw'
 
 6.  This directory is where the calibration scripts are located. Run
     these in this order to recalibrate the RoboVision system.
 
-    a.  Run python3 set_cam_index.py first to tell RoboVision which
+    a.  Run 'python3 set_cam_index.py' first to tell RoboVision which
          camera is used for each task. The color-cam is the one facing
          the fence, the angle-cam is the one that is closest to the
          intake side of the saw, and the center-cam is the one attached
@@ -43,15 +43,19 @@ for this process to be performed by a RoboSaw technician. 
 
 > Follow the prompts to save the camera indexes.
 
-b.  Run python3 tune_color_key_top.py to isolate the green color. Adjust
+b.  Run 'python3 tune_color_key_top.py' to isolate the green color. Adjust
      the sliders until only the green is visible.
 
-c.  Run python3 tune_color_key_bottom.py  to isolate the green color.
+c.  Run 'python3 tune_color_key_bottom.py'  to isolate the green color.
      Adjust the sliders until only the green is visible.
 
-> Tuning the color keys: image
+> Tuning the color keys:
+> Default view ![tune_color_zeroed](https://user-images.githubusercontent.com/55928366/165641691-36a1e34b-166a-4378-a07f-d77d559c408e.png)
+> Next adjust the Hue to isolate the green pixels as well as possible ![tune_color_H_set](https://user-images.githubusercontent.com/55928366/165641937-a7e04ee1-fa39-446e-9a7a-69f4d28be160.png)
+> Finally adjust the Saturation and Brightness to cut out extranious pixels ![tune_color_set_all](https://user-images.githubusercontent.com/55928366/165642008-b26f4294-e927-4a1b-87e8-1a1ad6900818.png)
 
-d.  Run python3 crop_angle_cam.py to crop the area viewed by the angle
+
+d.  Run 'python3 crop_angle_cam.py' to crop the area viewed by the angle
      detector. Make sure that the camera only sees the wood when the
      wood is loaded.
 
