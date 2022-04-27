@@ -59,7 +59,12 @@ d.  Run `python3 crop_angle_cam.py` to crop the area viewed by the angle
      detector. Make sure that the camera only sees the wood when the
      wood is loaded.
 
-> Cropping the angle camera: image
+> Cropping the angle camera: 
+> Default view with no wood loaded ![crop_angle_cam_no_wood](https://user-images.githubusercontent.com/55928366/165642387-3bf7e3cd-598b-444d-aa97-264a7b09e994.png)
+> Next load a 2x4 under the canera and make sure it is against the fence ![crop_angle_cam_wood_not_cropped](https://user-images.githubusercontent.com/55928366/165642485-0b5c48ff-c43f-46d7-804a-257504b0155c.png)
+> Finally adjust the **Top** and **Bottom** sliders to cut out any background around the wood. In rare cases it is possible that the roller is in view on the left side. If so, crop that out with the **Left** slider ![crop_angle_cam_wood_cropped](https://user-images.githubusercontent.com/55928366/165642715-33e845a5-1fbb-47a4-b0c4-798b6be57283.png)
+
+
 
 e.  Run `python3 crop_center_cam.py` to crop the area viewed by the center
      camera which positions the wood under the blade. Make sure the
@@ -67,7 +72,8 @@ e.  Run `python3 crop_center_cam.py` to crop the area viewed by the center
      try to make the cropped circle the same radius as the circular
      section of the table.
 
-> Cropping and aligning the center camera: image
+> Cropping and aligning the center camera: ![crop_center](https://user-images.githubusercontent.com/55928366/165642981-54499a2c-464a-47d3-882c-3f51c775c87f.png)
+
 
 f.  Run `python3 crop_color_cam_bottom.py` to isolate a small area on the
      green fence which, when blocked by a piece of wood, will tell the
@@ -75,9 +81,13 @@ f.  Run `python3 crop_color_cam_bottom.py` to isolate a small area on the
 
 g.  Run `python3 crop_color_cam_top.py` to isolate a small area on the
      green fence which, when blocked by a piece of wood, will tell the
-     RoboVision program that the wood is under the blade.
+     RoboVision program that the wood is under the blade. It is possible to accidentally crop the image in a direction that is not allowable. If this happens the ROI will turn red and you will not be able to save the selection.
 
-> Cropping the color camera regions of interest: image
+> Cropping the color camera regions of interest: 
+> Valid selection ![crop_color_region_valid](https://user-images.githubusercontent.com/55928366/165643034-238fe004-b55f-4405-a3f1-a043612bc343.png)
+> Invalid selection ![crop_color_region_invalid](https://user-images.githubusercontent.com/55928366/165643078-d6696757-dcac-4f77-94a5-24bdb098dbb3.png)
+
+
 
 h.  Run `python3 tune_canny.py` to tune the edge detection. Place a sample
      piece of wood with a line on it under the center camera. Adjust
@@ -88,7 +98,13 @@ h.  Run `python3 tune_canny.py` to tune the edge detection. Place a sample
      to similar lighting conditions and darkness of wood for each
      calibration.
 
-> Tuning the edge detection: images
+> Tuning the edge detection: 
+> Default values ![tune_canny_zeroed](https://user-images.githubusercontent.com/55928366/165643245-6eeb7756-28f1-46ad-b1d0-098e5bab01cb.png)
+> Marker only ![tune_canny_sharpie](https://user-images.githubusercontent.com/55928366/165643284-4c07346b-4b27-4028-8e60-6eca2f58a80a.png)
+> Pencil and marker ![tune_canny_pencil_and_sharpie](https://user-images.githubusercontent.com/55928366/165643342-0a93542c-3527-4ece-a048-dbe6dad3c36d.png)
+> Darker wood ![tune_canny_darker_wood](https://user-images.githubusercontent.com/55928366/165643389-731fc2e2-deaf-4842-b45a-509aa17fa6b8.png)
+
+
 
 # **Model.py**
 
