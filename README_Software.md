@@ -350,3 +350,8 @@ under the blade. If the wood is in place, it turns on the blade, lowers
 the blade, then raises it and stops the blade. Finally, it closes the
 camera captures and returns.
 <br>*Uses Model, robo_vision2, RoboSaw, ButtonHandler, time, cv2, sys, signal, pigpio, RPi.GPIO, numpy, simple_pid, and matplotlib.pyplot.*
+<br>
+# Dependencies
+![Untitled Diagram](https://user-images.githubusercontent.com/55928366/165645983-85dbdfad-5c0d-4d2c-a9f0-030f3f8a3b02.jpg)
+
+
