@@ -329,4 +329,4 @@ then does a visual check to see if the wood is loaded properly and is
 under the blade. If the wood is in place, it turns on the blade, lowers
 the blade, then raises it and stops the blade. Finally, it closes the
 camera captures and returns.
-<br>*Uses Model, robo_vision2, RoboSaw, ButtonHandler, time, cv2, sys, signal, pigpio, RPi.GPIO, numpy, simple_pid, and matplotlib.pyplot.
+<br>*Uses Model, robo_vision2, RoboSaw, ButtonHandler, time, cv2, sys, signal, pigpio, RPi.GPIO, numpy, simple_pid, and matplotlib.pyplot.*
