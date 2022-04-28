@@ -81,7 +81,7 @@ f.  Run `python3 crop_color_cam_bottom.py` to isolate a small area on the
 
 g.  Run `python3 crop_color_cam_top.py` to isolate a small area on the
      green fence which, when blocked by a piece of wood, will tell the
-     RoboVision program that the wood is under the blade. It is possible to accidentally crop the image in a direction that is not allowable. If this happens the ROI will turn red and you will not be able to save the selection.
+     RoboVision program that the wood is under the blade. It is possible to accidentally crop the image in a direction that is not allowable. If this happens the ROI will turn red and you will not be able to save the selection. It works best to make this ROI in a way that it captured both angled sides of the fence in the center.
 
 > Cropping the color camera regions of interest: 
 > Valid selection ![crop_color_region_valid](https://user-images.githubusercontent.com/55928366/165643034-238fe004-b55f-4405-a3f1-a043612bc343.png)
