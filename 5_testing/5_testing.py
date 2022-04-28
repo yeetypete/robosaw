@@ -293,7 +293,7 @@ def run(model):
         #################################
 
         caps = rv.open_cameras(model)
-
+        GPIO.setup(run_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # Check if wood is loaded
         while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
             rv.show(model)
@@ -395,7 +395,12 @@ def run(model):
                 close_caps(caps)
                 #break
                 return
-            
+            if GPIO.input(run_btn) == GPIO.LOW:
+                print("Run button was pushed, skipping current cut.")
+                robosaw.motors.setSpeeds(480,480)
+                time.sleep(0.5)
+                close_caps(caps)
+                return
             if (dist is not None):
                 model.dist = dist
                 #print("Distance: " + str(dist))
