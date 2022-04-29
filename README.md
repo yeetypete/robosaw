@@ -2,23 +2,13 @@
     <img width="50%" src="./readme_media/logo.png">
 </p>
 
-The Engineering Addendum is quick-start documentation written to any future team that may continue to work on your project. This is where you outline the gotchas of your project, types of things to look out for, the current state of the project, etc.  The purpose of README.md is to save any future team weeks of detective work just to get to where you are today. Think back to what types of things you had wished you knew earlier, doing future teams a favor by passing that knowledge along.  
-
 # RoboSaw Engineering Addendum
 
 ## Introduction
 RobSaw is a collaborative robot miter saw that can cut lumber to size autonomously by detecting a line drawn on the wood with a pen or pencil using computer vision, and then making a cut. This README details the intricacies and nuances of the project and serves as a general guide for getting started with creating a new RoboSaw.
 
 ## Current State of the Project
-
-### Hardware
-Currently RoboSaw is able to perform cross cuts on 2x4, 2x6, and 4x4 lumber up to 8 ft in length. A control pendant is used to interface with the RoboSaw, containing an emergency stop button, a run button, and a cut button. The run button is pressed to move the wood through the RoboSaw until the computer vision system, which uses three separate cameras, detects a line. Once a line is detected, the cut button can be pressed to perform a cut, and the 
-
-### Electronics
-
-
-### Software
-
+Currently RoboSaw is able to perform cross cuts on 2x4, 2x6, and 4x4 lumber up to 8 ft in length. A Metabo HPT 10 in miter saw is mounted in the middle of the RoboSaw frame and performs the cut. The RoboSaw's hardware mechanisms include an roller intake which feeds wood in and out of the miter saw, a saw actuation mechanism which lowers the saw blade to perform a cut, and a turntable mechanism which aligns the saw blade with the angle of the line drawn on the lumber. A control pendant is used to interface with the RoboSaw, containing an emergency stop button, a run button, and a cut button. The run button is pressed to move the wood through the RoboSaw until the computer vision system, which uses three separate cameras and the Python Open CV computer vision library, detects a line. Once a line is detected, the cut button can be pressed to perform a cut, and then the wood is moved until the end is reached or the next line is discovered. The cut piece is automatically ejected from the saw after it is cut. The RoboSaw software runs on a Raspberry Pi 4 and controls the motors and actuators via 2 Pololu G2 Motor Drivers. Cameras are connected to the Pi via USB and the buttons for the control pendant are attached directly to the free GPIO pins available on the Pi. All the electronics run off of a 12V 20A power supply. The voltage is stepped down to provide 5V power to the Raspberry Pi. The Miter has its own 120V AC plug and is controlled by a normally open relay switch attached wired to the Raspberry Pi.
 
 ## Pitfalls to Avoid
 ### Mechanical
@@ -26,8 +16,13 @@ When designing mechanisms for RoboSaw it is important to make them only as compl
 
 Because RoboSaw must be capable of handling very heavy 20 lb or 30 lb pieces of lumber, each mechanism has to be capable of exerting large forces without bending or breaking. This challenge means that in almost all situations, 3D printed or plastic parts will simply not cut it. Parts that directly interact with wood stock should be machined out of 6061 Aluminum for flat plates and the harder 7075 Aluminum alloy for shafts and parts exposed to torsional loads. Most heavy-duty parts are 0.375 in or 0.25 in thick depending on their load requirements. Even with parts made out of metal, mechanisms should be designed in such a way as to minimize internal stress.
 
+### Electronics
+RoboSaw nearly uses every single GPIO pin on the Raspberry Pi 4. If more IO is required, a different single board computer should be used that has more GPIO, or extending the GPIO via an SPI, I2C GPIO breakout board, or by multiplexing the GPIO pins should be considered. It is important to note that the Pi does not have and ADC pins. If ADC sampling is required, an I2C or SPI ADC breakout board is necessary.
+
 ### Software
-Camera 
+The RoboSaw software is responsible for autonomously preforming live cuts, so naturally software robustness is extremely important. Checks must be performed at each step in the image processing pipeline to ensure that no unexpected behavior has occurred. Redundancy in terms of data from camera feeds with multiple confirmations of the current state of the RoboSaw is highly encouraged. Finally, allowing the user to always interrupt or abort the program via hardware button interrupts is a crucial component of ensuring the safety of the RoboSaw software.
+
+Because hardware changes often occur during prototype development, no camera parameters should be hard coded. As has been done, calibration scripts should be created to quickly tune the cameras after they have been moved or a hardware change that otherwise affects the camera or wood view has been made.
 
 ## Future Work
 While the RoboSaw has proved its capabilities in cutting wood stock to size as a prototype, much remains to be tested to see if the RoboSaw would hold up in a jobsite environment. Future work should build on the RoboSaw platform, adding to its capabilities and testing the current design approach to see if it is truly robust enough to perform consistently in a more uncontrolled environment such as an active construction site.
