@@ -174,6 +174,9 @@ def raise_blade():
     motor3.setSpeed(0)
 
 def cut(model):
+    if model.cut_ready == False:
+        return
+    model.cut_initiated = True
     try:
         #time.sleep(1) # Wait for captures to close from Run()
         caps = rv.open_cameras(model)
@@ -189,9 +192,7 @@ def cut(model):
         #print("\nPress 'cut' button to make the cut.") # Alternatively use buttons or both for redundancy
         #GPIO.wait_for_edge(cut_btn, GPIO.FALLING) # Blocking statement that waits for user to press the cut button before proceeding to make the cut
         
-        if model.cut_ready == False:
-            return
-        model.cut_initiated = True
+        
 
         #not GPIO.input(cut_btn)
         #if not GPIO.input(cut_btn): # indent until Eject if uncommented later
@@ -267,12 +268,10 @@ def run(model):
     move line under blade and center it, 
     wait for confirmation button,
     make cut, raise blade """
-    
+    if model.cut_initiated == True:
+        return
     
     try:
-        if model.cut_initiated == True:
-            #rv.show(model)
-            return
         model.cut_ready = False
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
@@ -390,12 +389,14 @@ def run(model):
         while True:
             sample_time_start = time.time()
 
-            if model.cut_initiated == True:
+            if model.cut_initiated == True or model.stop_pid == True:
                 # Quit #
                 close_caps(caps)
                 #break
+                model.stop_pid = False
                 return
             if GPIO.input(run_btn) == GPIO.LOW:
+                model.cut_ready = False
                 print("Run button was pushed, skipping current cut.")
                 robosaw.motors.setSpeeds(480,480)
                 time.sleep(0.5)
@@ -413,8 +414,7 @@ def run(model):
                 
                 
                 model.cut_ready = True
-            else:
-                model.cut_ready = False
+            
             dist = rv.find_distance(model,caps[2])
             center_pid.sample_time = time.time() - sample_time_start
             #print("Sample time: " + str(time.time() - sample_time_start))
@@ -460,11 +460,12 @@ def run(model):
     except Exception as e: 
         print(e)
         close_caps(caps)
+        model.cut_ready = False
     finally:
         rv.show(model)
         close_caps(caps)
         robosaw.motors.setSpeeds(0,0)
-        model.cut_ready = True
+        #model.cut_ready = True
 
 def run_btn_callback(channel):
     print("Run button pressed")
@@ -478,7 +479,8 @@ def eject_btn_callback(channel):
     robosaw.motors.forceStop()
 
 def cut_btn_callback(channel):
-    model.cut_initiated = True
+    #model.stop_pid = True
+    #model.cut_initiated = True
     robosaw.motors.forceStop()
     print("Cut button pressed")
     cut(model)

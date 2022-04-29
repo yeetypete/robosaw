@@ -12,6 +12,7 @@ class Model(object):
         self.max_angle = MAX_ANGLE
         self.cut_initiated = False
         self.cut_ready = False
+        self.stop_pid = False
         self.allowable_overshoot = 10
         self.max_center_angle = 10 # Maximim tolerance for detecting the centered line, should be close to zero if the saw is angled correctly
         self.logo = cv2.imread(cv2.samples.findFile("RoboSaw_logo.jpg"))
