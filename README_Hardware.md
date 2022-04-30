@@ -1,8 +1,31 @@
-### Mechanical
-RoboSaw uses a roller-intake mechanism to feed lumber through the frame and to the Metabo miter saw. The intake clamps the wood from the top using a steel roller arm attached to two pairs of 10 lb gas springs. The gas springs damp the intake so that it conforms around the wood without snapback if the wood is removed.
 
-The saw 
-The turntable mechanism, which allows the RoboSaw to perform angled cuts, is still a work in progress. Currently, the mechanism uses a rack and pinion gear setup. The rack is mounted to the stationary back of the miter saw turntable and the pinon is mounted to the front 
+
+
+
+Note: The full list of required hardware can be found by referencing the [robosaw cad](https://drive.google.com/open?id=1KUuoNh6H83evjxDTPavQ_Iu1dTN5RaSh&authuser=psiegel%40bu.edu&usp=drive_fs) in the assembly `robosaw_assem_rev2.SLDASM`. SolidWorks 2022 or higher is required.
+
+## RoboSaw Roller Intake
+
+RoboSaw uses a roller-intake mechanism to feed lumber through the frame and to the Metabo miter saw. The intake clamps the wood from the top using a steel roller on a pivot arm attached to two pairs of 10 lb gas springs. The gas springs damp the intake so that it conforms around the wood without snapping back to its original position when removed. The wood is pushed through the intake by two 4 in urethane wheels mounted underneath a 0.125 clear acrylic panel. The wheels are direct drive driven by a 60 RPM brushed 12V planetary gearmotor. The wheels Wheels on the RoboSaw intake are angled towards the miter saw fence such that a portion of the wheel's force is directed at clamping the wood stock. The roller intake mechanism is present on both the intake and outtake size of the RoboSaw frame.
+
+![RoboSaw roller intake](./readme_media/roller_intake.jpg)
+
+Hardware Shortlist:
+- 4x Guden GGN51-010-A Gas Springs
+- 4x Guden BS107-02 Ball  Stud for Gas Spring
+- 4x Guden R217-02B 90 Degree Bracket for Mini Gas Spring
+- 6 x 12 6061 Alumunum Stock 0.25 in thickness
+- 0.5 in 7075 Aluminum rod 12" length
+- 2x McMaster 2277T419 1.9" Diameter Conveyer Roller
+- 2x ServoCity 5202 Series 60 RPM Go Bilda Motors
+
+Notes For Assembly
+- The side brackets can either be water jet cut or CNC machined. In our prototype, they were water jet cut because loose outer profile tolerances do not impact performance.
+- If the gas spring force must be decreased, remove one of the gas springs from either side of the pivot arm
+- The Rollers must be installed before screwing the two side brackets together
+- The gas spring retaining ring is very easy to lose. Be very careful while installing this component as any misalignment can send it flying.
+- The acrylic panel must be glued to two plastic brackets and wedged in between the green fence and the 80/20 supports. This is a very difficult assembly step and care should be taken not to snap the acrylic panel or the plastic support brackets. 
+
 
 ## RoboSaw Frame
 
