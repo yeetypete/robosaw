@@ -4,6 +4,14 @@ RoboSaw uses a roller-intake mechanism to feed lumber through the frame and to t
 The saw 
 The turntable mechanism, which allows the RoboSaw to perform angled cuts, is still a work in progress. Currently, the mechanism uses a rack and pinion gear setup. The rack is mounted to the stationary back of the miter saw turntable and the pinon is mounted to the front 
 
+## RoboSaw Frame
+
+The frame of the RoboSaw is constructed from 32 feet of 1.5 inch 80/20 stock. The 80/20 was secured together using various 80/20 fasteners. This frame allows us to mount the Metabo saw along with the intake mechanism. The 80/20 made the frame rigid to support large pieces of wood. The most important part of the 80/20 is it allows us to mount new components and mechanisms easily.  
+
+## RoboSaw Stand
+
+The RoboSaw stand was purchased from Home Depot. The stand was the DeWalt Rolling Miter Saw Stand. The 80/20 frame was mounted to this stand. It allowed us to lower and raise the entire saw. Moving the saw became much easier because when it is in the lowered position it can be rolled around similar to a dolly.
+
 ## RoboSaw Blade Actuation Mechanism
 This section will describe the RoboSaw Actuation Mechanism and its various components. This mechanism is responsible for performing the cut quickly and safely.
 
