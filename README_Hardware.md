@@ -1,3 +1,7 @@
+<p align="center" width="100%">
+    <img width="50%" src="./readme_media/logo.png">
+</p>
+
 # Introduction
 
 This ReadMe contains descriptions of all the hardware that makes up RoboSaw. All of the mechanism and power systems are explained in this document. Along with this document are CAD files, BOM's, invoices, and wiring Diagrams.
