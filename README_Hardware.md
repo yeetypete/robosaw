@@ -52,7 +52,7 @@ All of the screws, bolts, and nuts can be found in the Bill of Materials for the
 ## Power Requirements
 RoboSaw requires two 120V 60Hz AC wall power outlets to operate, one for powering the 12V 20A DC power supply that powers all the RoboSaw electronics, and one for the 15A miter saw itself. Provided that the power draw does not exceed any load limitations, a future revision should combine the two cables and then reroute them internally once power reaches the RoboSaw.
 
-## Emergency Stops and Saftey Features
+## Emergency Stops and Safety Features
 The main emergency stop is located on the front of the machine, and is a hard cut to both the 12V supply and the 120V to the saw motor. The green and red buttons contorl the saw blade power independently of the 12V supply. If the blade doesn't spin, make sure the green button is pressed on the e-stop. 
 
 ![e stop and pendant](./readme_media/IMG_2256.jpeg)
