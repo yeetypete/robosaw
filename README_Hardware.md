@@ -44,7 +44,7 @@ The RoboSaw stand was purchased from Home Depot. The stand was the DeWalt Rollin
 ## RoboSaw Blade Actuation Mechanism
 This section will describe the RoboSaw Actuation Mechanism and its various components. This mechanism is responsible for performing the cut quickly and safely.
 
-Real Actautor Mechnism|Included CAD
+Real Actuator Mechanism|Included CAD
 -|-
 ![Actuator Side Pic](./readme_media/realactuatorside.png)|![Actuator CAD Pic](./readme_media/actuatorcad.png)
 
