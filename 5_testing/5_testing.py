@@ -300,7 +300,7 @@ def run(model):
         #################################
 
         caps = rv.open_cameras(model)
-        GPIO.setup(run_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        #GPIO.setup(run_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # Check if wood is loaded
         while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
             rv.show(model)
@@ -409,8 +409,9 @@ def run(model):
                 model.cut_ready = False
                 model.cut_initiated = False
                 print("Run button was pushed, skipping current cut.")
-                robosaw.motors.setSpeeds(480,480)
-                time.sleep(0.5)
+                robosaw.motors.setSpeeds(0,0)
+                #robosaw.motors.setSpeeds(480,480)
+                #time.sleep(0.5)
                 #close_caps(caps)
                 return
             if (dist is not None):
@@ -527,7 +528,7 @@ if __name__ == "__main__":
     """
 
     # interrupt to run the saw
-    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='falling', bouncetime=100)
+    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='rising', bouncetime=100)
     cb_run.start()
     GPIO.add_event_detect(run_btn, GPIO.FALLING, 
             callback=cb_run)
