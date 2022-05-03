@@ -169,11 +169,12 @@ def find_distance(model,cap):
     disp = model.add_line_distance(frame_full,line)
 
     # make crosshairs
-    pt1 = (model.circle_x,model.circle_y-model.circle_rad)
-    pt2 = (model.circle_x,model.circle_y+model.circle_rad)
+    length = 100
+    pt1 = (model.circle_x,model.circle_y-length)
+    pt2 = (model.circle_x,model.circle_y+length)
     cv2.line(frame_full,pt1,pt2,(0,0,255),2, cv2.LINE_AA)
-    pt1 = (model.circle_x-model.circle_rad,model.circle_y)
-    pt2 = (model.circle_x+model.circle_rad,model.circle_y)
+    pt1 = (model.circle_x-length,model.circle_y)
+    pt2 = (model.circle_x+length,model.circle_y)
     cv2.line(frame_full,pt1,pt2,(0,0,255),2, cv2.LINE_AA)
 
     model.show = disp

@@ -22,10 +22,12 @@ class Model(object):
         """ Statistical analysis to find the best angle by removing outliers """
         elements = np.array(arr)
         mean = np.mean(elements, axis=0)
+        """
         sd = np.std(elements, axis=0)
         final_list = [x for x in arr if (x > mean - self.num_stds * sd)]
         final_list = [x for x in final_list if (x < mean + self.num_stds * sd)]
         best_angle = np.mean(final_list, axis=0)
+        """
         return mean
 
     def img_proc(self,frame):

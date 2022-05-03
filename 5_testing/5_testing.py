@@ -178,7 +178,7 @@ def cut(model):
         return
     model.cut_initiated = True
     try:
-        #time.sleep(1) # Wait for captures to close from Run()
+        rv.show(model)
         caps = rv.open_cameras(model)
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
@@ -217,7 +217,15 @@ def cut(model):
             act_time = 6.5
             motor3.setSpeed(-480)
             #time.sleep(act_time)
-            t_end = time.time() + act_time
+            t_end = time.time() + act_time/2
+            while time.time() < t_end:
+                if(rv.wood_is_under(model,caps[0])):
+                    print("Chop... \n\n")
+                    #rv.show(model)
+                else:
+                    print("Wood not under blade")
+
+            t_end = time.time() + act_time/2
             while time.time() < t_end:
                 if(rv.wood_is_under(model,caps[0])):
                     rv.show(model)
@@ -375,7 +383,7 @@ def run(model):
         setpoint, y, x = [], [], []
         start_time = time.time()
         dist = rv.find_distance(model,caps[2])
-        print("First dist: " + str(dist))
+        #print("First dist: " + str(dist))
         
         
         while dist == None or dist > 0:
@@ -391,16 +399,19 @@ def run(model):
 
             if model.cut_initiated == True or model.stop_pid == True:
                 # Quit #
-                close_caps(caps)
-                #break
+                #close_caps(caps)
+                model.cut_initiated = False
+                model.cut_ready = False
                 model.stop_pid = False
                 return
             if GPIO.input(run_btn) == GPIO.LOW:
+                #rv.show(model)
                 model.cut_ready = False
+                model.cut_initiated = False
                 print("Run button was pushed, skipping current cut.")
                 robosaw.motors.setSpeeds(480,480)
                 time.sleep(0.5)
-                close_caps(caps)
+                #close_caps(caps)
                 return
             if (dist is not None):
                 model.dist = dist
