@@ -1,0 +1,6 @@
+pgf.texsystem: pdflatex
+font.family: serif
+font.size: 16.0
+text.usetex: True
+pgf.rcfonts: False
+# pgf.preamble: \usepackage{amsmath}, \usepackage{siunitx}

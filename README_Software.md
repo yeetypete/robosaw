@@ -1,3 +1,7 @@
+<p align="center" width="100%">
+    <img width="50%" src="./readme_media/logo.png">
+</p>
+
 # **RoboSaw Software Guide**
 
 ## **Calibration Scripts**
