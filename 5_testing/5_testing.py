@@ -322,13 +322,14 @@ def run(model):
 
         # Once wood is loaded accumlate angle samples
         angles = []
+        print("\nLooking for angle...")
         while len(angles) < model.num_angle_samples:
             # Get angles as it moves and save to angle[] array
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
             angle = rv.find_angle(model,caps[1])
             rv.show(model)
             if angle is not None:
-                print("Angle: " + str(angle))
+                #print("Angle: " + str(angle))
                 angles.append(angle)
         # find most likely angle based on removing outliers and taking the mean
         blade_angle = model.best_angle(angles)
@@ -340,7 +341,7 @@ def run(model):
         # Rotate the blade to correct angle
         
         #blade_angle = 0 # override the angle if its a 4x4
-        print("\nRotate blade to " + str(blade_angle) + " degrees.\n")
+        print("\nAngle found. Rotate blade to " + str(blade_angle) + " degrees.\n")
         caps[1].release() # Close the angle camera
 
         """
@@ -394,6 +395,7 @@ def run(model):
         t_end = time.time() + 10 # run PID loop for specified time after the line is detected
         
         #while time.time() < t_end: 
+        print(" \n-- Hold then release 'RUN' to automatically move to next line.\n\n-- Tap 'RUN' to skip without moving to next line.\n   Then tap again to move to next line.")
         while True:
             sample_time_start = time.time()
 
@@ -408,10 +410,10 @@ def run(model):
                 #rv.show(model)
                 model.cut_ready = False
                 model.cut_initiated = False
-                print("Run button was pushed, skipping current cut.")
+                print("Run button was pushed, ignoring current line.")
                 robosaw.motors.setSpeeds(0,0)
                 #robosaw.motors.setSpeeds(480,480)
-                #time.sleep(0.5)
+                time.sleep(0.5)
                 #close_caps(caps)
                 return
             if (dist is not None):
@@ -528,19 +530,19 @@ if __name__ == "__main__":
     """
 
     # interrupt to run the saw
-    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='rising', bouncetime=100)
+    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='rising', bouncetime=10)
     cb_run.start()
     GPIO.add_event_detect(run_btn, GPIO.FALLING, 
             callback=cb_run)
 
     # interrupt to cut
-    cb_cut = ButtonHandler(cut_btn, cut_btn_callback, edge='falling', bouncetime=100)
+    cb_cut = ButtonHandler(cut_btn, cut_btn_callback, edge='falling', bouncetime=10)
     cb_cut.start()
     GPIO.add_event_detect(cut_btn, GPIO.FALLING, 
             callback=cb_cut)
 
     # interrupt to feed the wood manually
-    cb_eject = ButtonHandler(eject_btn, eject_btn_callback, edge='falling', bouncetime=100)
+    cb_eject = ButtonHandler(eject_btn, eject_btn_callback, edge='falling', bouncetime=10)
     cb_eject.start()
     GPIO.add_event_detect(eject_btn, GPIO.FALLING, 
             callback=cb_eject)

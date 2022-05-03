@@ -124,7 +124,7 @@ class Model(object):
         rho = line[0]
         theta = line[1]
         angle = self.get_saw_angle(line)
-        print("Angle: " + str(angle))
+        #print("Angle: " + str(angle))
         a = np.cos(theta)
         b = np.sin(theta)
         x0 = a * rho
