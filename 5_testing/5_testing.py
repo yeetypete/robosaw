@@ -217,15 +217,16 @@ def cut(model):
             act_time = 6.5
             motor3.setSpeed(-480)
             #time.sleep(act_time)
-            t_end = time.time() + act_time/2
+            t_end = time.time() + act_time/4
             while time.time() < t_end:
                 if(rv.wood_is_under(model,caps[0])):
-                    print("Chop... \n\n")
+                    #print("Chop... \n\n")
+                    time.sleep(0.001)
                     #rv.show(model)
                 else:
                     print("Wood not under blade")
 
-            t_end = time.time() + act_time/2
+            t_end = time.time() + 3*act_time/4
             while time.time() < t_end:
                 if(rv.wood_is_under(model,caps[0])):
                     rv.show(model)
@@ -257,8 +258,10 @@ def cut(model):
             return
         # indent until Eject if uncommented later
         
-        caps[0].release() #########################
+        model.cut_initiated = False
+        #caps[0].release() #########################
         close_caps(caps) # Always close captures after
+        
     except Exception as e: 
         print(e)
         close_caps(caps) # Close caps if program fails or gets cancelled
@@ -278,9 +281,9 @@ def run(model):
     make cut, raise blade """
     if model.cut_initiated == True:
         return
-    
+    model.cut_ready = False
+
     try:
-        model.cut_ready = False
         _pi = robosaw.init_gpio()
         args = robosaw.init_args()
         motor3 = robosaw.Actuator(_pin_M3PWM, _pin_M3DIR, _pin_M3EN, _pin_M3FLT, _pi)
@@ -395,27 +398,28 @@ def run(model):
         t_end = time.time() + 10 # run PID loop for specified time after the line is detected
         
         #while time.time() < t_end: 
-        print(" \n-- Hold then release 'RUN' to automatically move to next line.\n\n-- Tap 'RUN' to skip without moving to next line.\n   Then tap again to move to next line.")
+        print(" \n-- Press 'RUN' to preview the cut.\n\n-- Tap 'RUN' to skip without moving to next line.\n   or press 'CUT' to make the cut.")
         while True:
             sample_time_start = time.time()
 
+            
             if model.cut_initiated == True or model.stop_pid == True:
+            #if model.cut_initiated == True:
                 # Quit #
                 #close_caps(caps)
-                model.cut_initiated = False
-                model.cut_ready = False
-                model.stop_pid = False
+                #model.cut_initiated = False
+                #model.cut_ready = False
+                #model.stop_pid = False
                 return
+            
+
             if GPIO.input(run_btn) == GPIO.LOW:
-                #rv.show(model)
-                model.cut_ready = False
-                model.cut_initiated = False
-                print("Run button was pushed, ignoring current line.")
+                #time.sleep(0.1)
                 robosaw.motors.setSpeeds(0,0)
-                #robosaw.motors.setSpeeds(480,480)
-                time.sleep(0.5)
-                #close_caps(caps)
+                model.cut_ready = True
+                rv.show(model)
                 return
+
             if (dist is not None):
                 model.dist = dist
                 #print("Distance: " + str(dist))
@@ -474,12 +478,12 @@ def run(model):
     except Exception as e: 
         print(e)
         close_caps(caps)
-        model.cut_ready = False
+        #model.cut_ready = False
     finally:
         rv.show(model)
         close_caps(caps)
         robosaw.motors.setSpeeds(0,0)
-        #model.cut_ready = True
+        model.cut_ready = True
 
 def run_btn_callback(channel):
     print("Run button pressed")
@@ -530,7 +534,7 @@ if __name__ == "__main__":
     """
 
     # interrupt to run the saw
-    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='rising', bouncetime=10)
+    cb_run = ButtonHandler(run_btn, run_btn_callback, edge='falling', bouncetime=10)
     cb_run.start()
     GPIO.add_event_detect(run_btn, GPIO.FALLING, 
             callback=cb_run)

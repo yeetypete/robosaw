@@ -113,7 +113,7 @@ class Model(object):
                 angle = (angle - 180)
             if (abs(angle) < self.max_angle):
                 out_angle = angle
-            return out_angle
+            return -out_angle # flip for motor control requirement
         else:
             return None
 
