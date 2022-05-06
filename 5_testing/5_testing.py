@@ -305,6 +305,15 @@ def run(model):
         caps = rv.open_cameras(model)
         #GPIO.setup(run_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # Check if wood is loaded
+        if rv.wood_is_loaded(model,caps[0]):
+            rv.show(model)
+            time.sleep(0.5)
+            rv.show(model)
+        else:
+            rv.show(model)
+            time.sleep(0.5)
+            rv.show(model)
+
         while not rv.wood_is_loaded(model,caps[0]): # wait for the wood
             rv.show(model)
             robosaw.motors.setSpeeds(args.speed, args.speed) # idle
@@ -517,7 +526,7 @@ if __name__ == "__main__":
     GPIO.setup(eject_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(cut_btn, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    #raise_blade()
+    raise_blade()
 
     """
     run_flag = 0
